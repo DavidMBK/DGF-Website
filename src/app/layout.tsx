@@ -49,8 +49,8 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.dgftechsolutions.com"),
   title: {
-    default: "DGF Tech Solutions — Software House a Messina",
-    template: "%s — DGF Tech Solutions",
+    default: "DGF Tech Solutions | Software House a Messina",
+    template: "%s | DGF Tech Solutions",
   },
   description:
     "Software house a Messina, attiva in tutta Italia: siti web, e-commerce, app, software su misura e soluzioni AI. Dall'idea al lancio, parli sempre con chi scrive il codice.",
@@ -72,7 +72,7 @@ export const metadata: Metadata = {
     locale: "it_IT",
     url: "/",
     siteName: "DGF Tech Solutions",
-    title: "DGF Tech Solutions — Software House a Messina",
+    title: "DGF Tech Solutions | Software House a Messina",
     description:
       "Siti, e-commerce, app e soluzioni AI su misura. Una software house a Messina dove parli sempre con chi progetta e scrive il codice.",
     images: [
@@ -80,13 +80,13 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "DGF Tech Solutions — Software House a Messina",
+        alt: "DGF Tech Solutions | Software House a Messina",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "DGF Tech Solutions — Software House a Messina",
+    title: "DGF Tech Solutions | Software House a Messina",
     description:
       "Siti, e-commerce, app e soluzioni AI su misura. Parli sempre con chi progetta e scrive il codice.",
     images: ["/og-image.png"],
@@ -110,6 +110,30 @@ export default function RootLayout({
       <body
         className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable} ${cormorant.variable} ${playfair.variable} antialiased`}
       >
+        {/* Dati strutturati Schema.org: aiutano Google a identificare
+            DGF Tech Solutions come entità precisa (riduce la confusione con
+            aziende omonime tipo "DGF Technologies" o "DGF Group"). */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "DGF Tech Solutions",
+              url: "https://www.dgftechsolutions.com",
+              logo: "https://www.dgftechsolutions.com/logo-dgf-trasparente.png",
+              description:
+                "Software house a Messina, attiva in tutta Italia: siti web, e-commerce, app, software su misura e soluzioni AI.",
+              email: "founders.dgftechsolutions@gmail.com",
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: "Messina",
+                addressCountry: "IT",
+              },
+              areaServed: "IT",
+            }),
+          }}
+        />
         <IntroAnimation />
         <LenisProvider>{children}</LenisProvider>
       </body>
