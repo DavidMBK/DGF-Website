@@ -1,0 +1,54 @@
+name: Deploy sito su GitHub Pages
+
+# Si avvia a ogni push sul branch principale, oppure manualmente dalla
+# tab "Actions" del repo.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Permessi minimi richiesti per pubblicare su Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Evita deploy sovrapposti: se ne parte uno nuovo, aspetta quello in corso.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del codice
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Installa le dipendenze
+        run: npm ci
+
+      - name: Build (export statico in ./out)
+        run: npm run build
+
+      - name: Prepara l'artefatto per Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Pubblica su GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
