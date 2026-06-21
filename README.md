@@ -7,7 +7,7 @@ Progettiamo e sviluppiamo siti web, e-commerce, app, software su misura e
 soluzioni di AI e automazione: dall'idea al lancio, con chi scrive il codice
 al tuo fianco.
 
-🔗 **[www.dgftechsolutions.com](https://www.dgftechsolutions.com)**
+🔗 **[dgftechsolutions.com](https://dgftechsolutions.com)**
 
 ---
 

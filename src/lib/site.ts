@@ -5,7 +5,7 @@ export const site = {
     "Software house a Messina. Sviluppo, design e AI, dall'idea al lancio.",
   description:
     "Software house a Messina, attiva in tutta Italia: siti web, e-commerce, app, software su misura e soluzioni AI, con chi scrive il codice al tuo fianco.",
-  url: "https://www.dgftechsolutions.com",
+  url: "https://dgftechsolutions.com",
 } as const;
 
 export const navLinks = [

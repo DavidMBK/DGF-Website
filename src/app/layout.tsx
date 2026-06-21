@@ -47,7 +47,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.dgftechsolutions.com"),
+  metadataBase: new URL("https://dgftechsolutions.com"),
   title: {
     default: "DGF Tech Solutions | Software House a Messina",
     template: "%s | DGF Tech Solutions",
@@ -120,17 +120,35 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Organization",
               name: "DGF Tech Solutions",
-              url: "https://www.dgftechsolutions.com",
-              logo: "https://www.dgftechsolutions.com/logo-dgf-trasparente.png",
+              legalName: "DGF Tech Solutions S.r.l.",
+              url: "https://dgftechsolutions.com",
+              logo: "https://dgftechsolutions.com/logo-dgf-trasparente.png",
+              image: "https://dgftechsolutions.com/og-image.png",
               description:
-                "Software house a Messina, attiva in tutta Italia: siti web, e-commerce, app, software su misura e soluzioni AI.",
+                "Software house italiana con sede a Messina: sviluppo di siti web, e-commerce, app, software su misura e soluzioni di intelligenza artificiale. Non è collegata ad aziende omonime estere.",
+              slogan: "Dall'idea al lancio, parli sempre con chi scrive il codice.",
               email: "founders.dgftechsolutions@gmail.com",
+              // P.IVA italiana: identificatore univoco che distingue questa
+              // azienda dalle omonime estere (DGF Group, DGF Technologies).
+              vatID: "IT03882320835",
+              taxID: "03882320835",
+              foundingLocation: { "@type": "Place", name: "Messina, Italia" },
               address: {
                 "@type": "PostalAddress",
                 addressLocality: "Messina",
+                addressRegion: "ME",
                 addressCountry: "IT",
               },
-              areaServed: "IT",
+              areaServed: { "@type": "Country", name: "Italia" },
+              knowsAbout: [
+                "Sviluppo software",
+                "Sviluppo siti web",
+                "E-commerce",
+                "Sviluppo app mobile",
+                "Intelligenza artificiale",
+                "Automazione",
+                "UI/UX design",
+              ],
             }),
           }}
         />
