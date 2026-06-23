@@ -1,7 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { SELECT_SERVICE_EVENT } from "@/lib/scroll";
 import {
   SitiVisual,
   EcommerceVisual,
@@ -199,7 +200,7 @@ function DetailView({
             {service.title}
           </h3>
 
-          <p className="mt-2 text-[14px] italic text-brand-blue/80 sm:mt-3 sm:text-[15px]">
+          <p className="mt-2 text-[14px] italic text-brand-blue sm:mt-3 sm:text-[15px]">
             {service.tagline}
           </p>
 
@@ -245,6 +246,17 @@ export function Services() {
   const reducedMotion = usePrefersReducedMotion();
   const [activeId, setActiveId] = useState<string>(SERVICES[0].id);
   const active = SERVICES.find((s) => s.id === activeId) ?? SERVICES[0];
+
+  // I link "Servizi" del footer attivano la tab corrispondente via evento
+  // (la sezione è una vista a tab, non ci sono ancore DOM per ogni servizio).
+  useEffect(() => {
+    function onSelect(e: Event) {
+      const id = (e as CustomEvent<string>).detail;
+      if (id && SERVICES.some((s) => s.id === id)) setActiveId(id);
+    }
+    window.addEventListener(SELECT_SERVICE_EVENT, onSelect);
+    return () => window.removeEventListener(SELECT_SERVICE_EVENT, onSelect);
+  }, []);
 
   return (
     <section

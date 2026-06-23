@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { geoOrthographic, geoPath, geoContains } from "d3-geo";
 import { feature } from "topojson-client";
 import worldTopology from "world-atlas/land-110m.json";
@@ -215,6 +216,11 @@ const FRONT_THRESHOLD = -0.06;
 
 export function HeroBackground() {
   const reducedMotion = usePrefersReducedMotion();
+  // Su mobile congeliamo il globo: niente loop RAF né re-render dell'SVG a
+  // 60fps (il costo CPU/batteria maggiore). Su touch non c'è parallax mouse e
+  // lo spin lento è secondario, quindi un globo statico e nitido è il compromesso.
+  const isMobile = useIsMobile();
+  const animate = !reducedMotion && !isMobile;
   const containerRef = useRef<HTMLDivElement>(null);
   const targetRef = useRef({ x: 0, y: 0 });
   // Tempo di animazione accumulato: persiste tra una pausa e l'altra così la
@@ -239,7 +245,7 @@ export function HeroBackground() {
   }, []);
 
   useEffect(() => {
-    if (reducedMotion || !inView) return;
+    if (!animate || !inView) return;
 
     const handleMouse = (e: MouseEvent) => {
       targetRef.current = {
@@ -267,10 +273,10 @@ export function HeroBackground() {
       window.removeEventListener("mousemove", handleMouse);
       cancelAnimationFrame(raf);
     };
-  }, [reducedMotion, inView]);
+  }, [animate, inView]);
 
   const rotY =
-    BASE_ROT_Y + state.mx * PARALLAX_Y - (reducedMotion ? 0 : state.time * ROT_SPEED);
+    BASE_ROT_Y + state.mx * PARALLAX_Y - (animate ? state.time * ROT_SPEED : 0);
   const rotX = BASE_ROT_X - state.my * PARALLAX_X;
 
   const projected = useMemo(

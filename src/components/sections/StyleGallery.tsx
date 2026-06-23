@@ -16,21 +16,24 @@ const VIRTUAL_PCT = "142.857%"; // 1 / 0.7
 type Mockup = {
   id: string;
   url: string;
-  image: string;
+  image: string; // anteprima leggera (~1000px WebP) per card/lista
+  full: string; // alta risoluzione (~1920px WebP) solo per il lightbox
   render: () => ReactNode;
 };
 
 // Il sito mostra gli SCREENSHOT (campo `image`, in /public/mockups) per avere
 // proporzioni identiche e massima nitidezza nel ventaglio 3D.
+// Gli asset sono WebP ottimizzati: `image` (~1000px, anteprima) caricato in
+// pagina, `full` (~1920px) caricato on-demand all'apertura del lightbox.
 // Le funzioni *Mockup() vive restano qui e su /preview: per modificarne uno,
-// edita la funzione → rigenera con shot.cjs → ricopia il PNG in public/mockups.
+// edita la funzione → rigenera lo screenshot → riottimizza in public/mockups.
 export const MOCKUPS: readonly Mockup[] = [
-  { id: "ecommerce",    url: "erba.it",              image: "/mockups/ecommerce.png",    render: () => <EcommerceMockup /> },
-  { id: "gestionale",   url: "saldo.app",            image: "/mockups/gestionale.png",   render: () => <GestionaleMockup /> },
-  { id: "ristorazione", url: "sale-ristorante.it",   image: "/mockups/ristorazione.png", render: () => <RistorazioneMockup /> },
-  { id: "immobiliare",  url: "dimora.it",            image: "/mockups/immobiliare.png",  render: () => <ImmobiliareMockup /> },
-  { id: "turismo",      url: "altrove.com",          image: "/mockups/turismo.png",      render: () => <TurismoMockup /> },
-  { id: "moda",         url: "maison.com",           image: "/mockups/moda.png",         render: () => <ModaMockup /> },
+  { id: "ecommerce",    url: "erba.it",              image: "/mockups/ecommerce.webp",    full: "/mockups/ecommerce-full.webp",    render: () => <EcommerceMockup /> },
+  { id: "gestionale",   url: "saldo.app",            image: "/mockups/gestionale.webp",   full: "/mockups/gestionale-full.webp",   render: () => <GestionaleMockup /> },
+  { id: "ristorazione", url: "sale-ristorante.it",   image: "/mockups/ristorazione.webp", full: "/mockups/ristorazione-full.webp", render: () => <RistorazioneMockup /> },
+  { id: "immobiliare",  url: "dimora.it",            image: "/mockups/immobiliare.webp",  full: "/mockups/immobiliare-full.webp",  render: () => <ImmobiliareMockup /> },
+  { id: "turismo",      url: "altrove.com",          image: "/mockups/turismo.webp",      full: "/mockups/turismo-full.webp",      render: () => <TurismoMockup /> },
+  { id: "moda",         url: "maison.com",           image: "/mockups/moda.webp",         full: "/mockups/moda-full.webp",         render: () => <ModaMockup /> },
 ];
 
 function MockupImage({ mockup }: { mockup: Mockup }) {
@@ -40,6 +43,8 @@ function MockupImage({ mockup }: { mockup: Mockup }) {
       src={mockup.image}
       alt=""
       loading="lazy"
+      width={1000}
+      height={625}
       className="absolute inset-0 w-full h-full object-cover"
     />
   );
@@ -152,19 +157,48 @@ export function StyleGallery() {
 
   // Lightbox: clic su una card → screenshot grande e leggibile.
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  // Elemento che aveva il focus prima di aprire: ci torniamo alla chiusura.
+  const lastFocusedRef = useRef<HTMLElement | null>(null);
   const closeLightbox = () => setLightboxIdx(null);
   const stepLightbox = (dir: number) =>
     setLightboxIdx((idx) => (idx === null ? null : (idx + dir + MOCKUPS.length) % MOCKUPS.length));
 
   useEffect(() => {
     if (lightboxIdx === null) return;
+    // Salva il focus corrente e spostalo dentro il dialog.
+    lastFocusedRef.current = document.activeElement as HTMLElement | null;
+    dialogRef.current?.focus();
+
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setLightboxIdx(null);
-      else if (e.key === "ArrowRight") setLightboxIdx((idx) => (idx === null ? null : (idx + 1) % MOCKUPS.length));
-      else if (e.key === "ArrowLeft") setLightboxIdx((idx) => (idx === null ? null : (idx - 1 + MOCKUPS.length) % MOCKUPS.length));
+      if (e.key === "Escape") {
+        setLightboxIdx(null);
+      } else if (e.key === "ArrowRight") {
+        setLightboxIdx((idx) => (idx === null ? null : (idx + 1) % MOCKUPS.length));
+      } else if (e.key === "ArrowLeft") {
+        setLightboxIdx((idx) => (idx === null ? null : (idx - 1 + MOCKUPS.length) % MOCKUPS.length));
+      } else if (e.key === "Tab") {
+        // Focus trap: mantieni il focus tra i controlli del dialog.
+        const focusables = dialogRef.current?.querySelectorAll<HTMLElement>("button");
+        if (!focusables || focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        const activeEl = document.activeElement;
+        if (e.shiftKey && (activeEl === first || activeEl === dialogRef.current)) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && activeEl === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      // Ripristina il focus sull'elemento che aveva aperto il lightbox.
+      lastFocusedRef.current?.focus?.();
+    };
   }, [lightboxIdx]);
 
   return (
@@ -295,6 +329,24 @@ export function StyleGallery() {
               </motion.div>
             </div>
 
+            {/* Equivalente da tastiera del ventaglio 3D (che è mouse-only):
+                bottoni focusabili e annunciati dagli screen reader, nascosti
+                visivamente ma resi visibili al focus. Solo desktop (md+); su
+                mobile la lista qui sotto ha già i suoi bottoni. (WCAG 2.1.1) */}
+            <ul className="hidden md:flex md:flex-wrap md:justify-center md:gap-2">
+              {MOCKUPS.map((m, i) => (
+                <li key={m.id}>
+                  <button
+                    type="button"
+                    onClick={() => setLightboxIdx(i)}
+                    className="sr-only focus:not-sr-only focus:rounded-full focus:border focus:border-white/30 focus:bg-white/10 focus:px-4 focus:py-2 focus:text-sm focus:text-white"
+                  >
+                    Apri anteprima del progetto {m.url}
+                  </button>
+                </li>
+              ))}
+            </ul>
+
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -341,7 +393,12 @@ export function StyleGallery() {
 
       {lightboxIdx !== null && (
         <div
-          className="fixed inset-0 z-[120] flex items-center justify-center bg-black/85 backdrop-blur-sm p-6"
+          ref={dialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Anteprima del progetto ${MOCKUPS[lightboxIdx].url}`}
+          tabIndex={-1}
+          className="fixed inset-0 z-[120] flex items-center justify-center bg-black/85 backdrop-blur-sm p-6 outline-none"
           onClick={closeLightbox}
         >
           <button
@@ -362,8 +419,8 @@ export function StyleGallery() {
           </button>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={MOCKUPS[lightboxIdx].image}
-            alt=""
+            src={MOCKUPS[lightboxIdx].full}
+            alt={`Anteprima del progetto ${MOCKUPS[lightboxIdx].url}`}
             onClick={(e) => e.stopPropagation()}
             className="w-full max-w-[min(1150px,94vw)] aspect-[16/10] object-contain rounded-xl shadow-[0_40px_120px_-20px_rgba(0,0,0,0.9)]"
           />

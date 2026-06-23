@@ -7,18 +7,14 @@ export function scrollToSection(id: string) {
   window.scrollTo({ top, behavior: "smooth" });
 }
 
-export function scrollToCard(id: string) {
-  const el = document.getElementById(id);
-  if (!el) return;
+// La sezione Servizi è una vista a tab: l'id del servizio non esiste come
+// ancora nel DOM. Per i link "Servizi" del footer notifichiamo la sezione di
+// attivare la tab giusta (evento) e poi scrolliamo alla sezione #servizi.
+export const SELECT_SERVICE_EVENT = "dgf:select-service";
 
-  const top = el.getBoundingClientRect().top + window.scrollY - NAV_HEIGHT - 24;
-  window.scrollTo({ top, behavior: "smooth" });
-
-  // Flash feedback once scroll has begun
-  setTimeout(() => {
-    el.classList.add("card-flash");
-    el.addEventListener("animationend", () => el.classList.remove("card-flash"), {
-      once: true,
-    });
-  }, 800);
+export function selectService(id: string) {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent(SELECT_SERVICE_EVENT, { detail: id }));
+  }
+  scrollToSection("servizi");
 }

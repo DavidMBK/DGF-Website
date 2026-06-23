@@ -10,8 +10,17 @@ import { Footer } from "@/components/Footer";
 export default function HomePage() {
   return (
     <>
+      {/* Skip-link: primo elemento focusabile, visibile solo su focus da
+          tastiera. Permette di saltare nav + intro e andare al contenuto
+          (WCAG 2.4.1 Bypass Blocks). */}
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-lg focus:bg-brand-navy focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-white focus:shadow-lg"
+      >
+        Salta al contenuto
+      </a>
       <Nav />
-      <main>
+      <main id="main" tabIndex={-1}>
         <Hero />
         <StyleGallery />
         <Consulenza />

@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono, Cormorant, Playfair_Display } from "next/font/google";
-import { LenisProvider } from "@/components/LenisProvider";
 import { IntroAnimation } from "@/components/IntroAnimation";
 import "./globals.css";
 
@@ -77,7 +76,7 @@ export const metadata: Metadata = {
       "Siti, e-commerce, app e soluzioni AI su misura. Una software house a Messina dove parli sempre con chi progetta e scrive il codice.",
     images: [
       {
-        url: "/og-image.png",
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "DGF Tech Solutions | Software House a Messina",
@@ -89,7 +88,7 @@ export const metadata: Metadata = {
     title: "DGF Tech Solutions | Software House a Messina",
     description:
       "Siti, e-commerce, app e soluzioni AI su misura. Parli sempre con chi progetta e scrive il codice.",
-    images: ["/og-image.png"],
+    images: ["/og-image.jpg"],
   },
 };
 
@@ -123,11 +122,18 @@ export default function RootLayout({
               legalName: "DGF Tech Solutions S.r.l.",
               url: "https://dgftechsolutions.com",
               logo: "https://dgftechsolutions.com/logo-dgf-trasparente.png",
-              image: "https://dgftechsolutions.com/og-image.png",
+              image: "https://dgftechsolutions.com/og-image.jpg",
               description:
                 "Software house italiana con sede a Messina: sviluppo di siti web, e-commerce, app, software su misura e soluzioni di intelligenza artificiale. Non è collegata ad aziende omonime estere.",
               slogan: "Dall'idea al lancio, parli sempre con chi scrive il codice.",
               email: "founders.dgftechsolutions@gmail.com",
+              contactPoint: {
+                "@type": "ContactPoint",
+                email: "founders.dgftechsolutions@gmail.com",
+                contactType: "customer support",
+                areaServed: "IT",
+                availableLanguage: ["Italian"],
+              },
               // P.IVA italiana: identificatore univoco che distingue questa
               // azienda dalle omonime estere (DGF Group, DGF Technologies).
               vatID: "IT03882320835",
@@ -153,7 +159,7 @@ export default function RootLayout({
           }}
         />
         <IntroAnimation />
-        <LenisProvider>{children}</LenisProvider>
+        {children}
       </body>
     </html>
   );

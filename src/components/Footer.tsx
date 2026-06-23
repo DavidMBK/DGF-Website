@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { ArrowUpRight, ArrowUp } from "lucide-react";
-import { scrollToSection, scrollToCard } from "@/lib/scroll";
+import { scrollToSection, selectService } from "@/lib/scroll";
 
 const SERVICE_LINKS = [
   { label: "Siti web", cardId: "svc-siti" },
@@ -60,7 +60,7 @@ export function Footer() {
               Software house con base a Messina. Diamo forma a prodotti digitali,
               dal primo schizzo fino al lancio.
             </p>
-            <div className="mt-6 inline-flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.26em] text-white/40">
+            <div className="mt-6 inline-flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.26em] text-white/70">
               <span className="h-px w-5 bg-brand-cyan/50" />
               Messina · in tutta Italia
             </div>
@@ -68,7 +68,7 @@ export function Footer() {
 
           {/* Servizi */}
           <nav aria-label="Servizi">
-            <h3 className="mb-5 inline-flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.26em] text-brand-cyan/80">
+            <h3 className="mb-5 inline-flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.26em] text-brand-cyan">
               <span className="h-px w-5 bg-brand-cyan/50" />
               Servizi
             </h3>
@@ -76,7 +76,7 @@ export function Footer() {
               {SERVICE_LINKS.map((link) => (
                 <li key={link.cardId}>
                   <button
-                    onClick={() => scrollToCard(link.cardId)}
+                    onClick={() => selectService(link.cardId)}
                     className="group inline-flex items-center gap-1.5 text-sm text-white/60 transition-colors duration-200 hover:text-white"
                   >
                     {link.label}
@@ -93,7 +93,7 @@ export function Footer() {
 
           {/* Studio */}
           <nav aria-label="Studio">
-            <h3 className="mb-5 inline-flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.26em] text-brand-cyan/80">
+            <h3 className="mb-5 inline-flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.26em] text-brand-cyan">
               <span className="h-px w-5 bg-brand-cyan/50" />
               Studio
             </h3>
@@ -119,11 +119,11 @@ export function Footer() {
 
         {/* ── Barra inferiore ── */}
         <div className="flex flex-col items-start justify-between gap-4 border-t border-white/10 py-8 sm:flex-row sm:items-center">
-          <p className="text-xs text-white/45">
+          <p className="text-xs text-white/70" suppressHydrationWarning>
             {year} DGF Tech Solutions.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
-            <p className="text-xs text-white/45">
+            <p className="text-xs text-white/70">
               P.IVA 03882320835
             </p>
             <button

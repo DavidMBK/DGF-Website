@@ -424,7 +424,20 @@ export function Consulenza() {
     return () => window.removeEventListener("resize", measure);
   }, [isMobile]);
 
+  // Niente morph guidato dallo scroll quando:
+  //  - reduced-motion (accessibilità, WCAG 2.3.3), oppure
+  //  - mobile: il morph anima width/height/padding ad ogni frame (layout
+  //    reflow continuo) → scatti durante lo scroll. Su mobile mostriamo il
+  //    dispositivo statico (il telefono) e la sezione scorre normalmente,
+  //    senza sticky/scroll-jack.
+  const staticMode = reducedMotion || isMobile;
+
   useEffect(() => {
+    if (staticMode) {
+      // Mobile → telefono (stato naturale su smartphone); desktop reduced-motion → laptop.
+      scrollYProgress.set(isMobile ? 1 : 0);
+      return;
+    }
     const el = sectionRef.current;
     if (!el) return;
     let rafId = 0;
@@ -463,7 +476,7 @@ export function Consulenza() {
       io.disconnect();
       cancelAnimationFrame(rafId);
     };
-  }, [scrollYProgress]);
+  }, [scrollYProgress, staticMode, isMobile]);
 
   return (
     <section
@@ -495,9 +508,17 @@ export function Consulenza() {
           piena; su mobile il dispositivo viene scalato per stare nello schermo. */}
       <div
         ref={stageRef}
-        className="relative mx-auto max-w-[1400px] px-4 sm:px-6 min-h-[280vh] lg:min-h-[300vh]"
+        className={`relative mx-auto max-w-[1400px] px-4 sm:px-6 ${
+          staticMode ? "py-16 sm:py-20" : "min-h-[280vh] lg:min-h-[300vh]"
+        }`}
       >
-        <div className="sticky top-0 flex h-screen-safe items-center justify-center overflow-hidden py-8">
+        <div
+          className={
+            staticMode
+              ? "flex items-center justify-center overflow-hidden py-8"
+              : "sticky top-0 flex h-screen-safe items-center justify-center overflow-hidden py-8"
+          }
+        >
           <motion.div
             initial={reducedMotion ? false : { opacity: 0, y: 30 }}
             whileInView={reducedMotion ? undefined : { opacity: 1, y: 0 }}

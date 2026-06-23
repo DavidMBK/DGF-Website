@@ -9,6 +9,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
       url: "https://dgftechsolutions.com/",
+      // lastmod = data di build (ogni deploy aggiorna il segnale di freschezza,
+      // l'unico campo che i crawler usano davvero; priority/changefreq sono
+      // in gran parte ignorati da Google).
+      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 1,
     },

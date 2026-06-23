@@ -130,13 +130,16 @@ interface PhaseBackgroundProps {
   alt: string;
   active: boolean;
   fast?: boolean;
+  // `solo`: su mobile montiamo solo la clip della fase attiva (1 decoder),
+  // quindi deve fare il fade-in da sola invece di partire già opaca.
+  solo?: boolean;
 }
 
 // Full-bleed background clip for a single phase. Only the active clip plays and
 // is opaque; the others fade to 0 and pause, so one video decodes at a time.
 // The idle 1.06 scale settling to 1 gives a slow Ken Burns-style push-in.
 // `fast` (mobile) accorcia il crossfade così lo stacco tra le fasi è netto.
-function PhaseBackground({ src, alt, active, fast }: PhaseBackgroundProps) {
+function PhaseBackground({ src, active, fast, solo }: PhaseBackgroundProps) {
   const ref = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -150,18 +153,22 @@ function PhaseBackground({ src, alt, active, fast }: PhaseBackgroundProps) {
     <motion.div
       aria-hidden={!active}
       className="absolute inset-0 overflow-hidden"
-      initial={false}
+      initial={solo ? { opacity: 0 } : false}
       animate={{ opacity: active ? 1 : 0, scale: active ? 1 : fast ? 1 : 1.06 }}
       transition={{ duration: fast ? 0.32 : 1.1, ease: PHASE_EASE }}
     >
       <video
         ref={ref}
         src={src}
-        aria-label={alt}
+        // Clip puramente decorativa di sfondo: nascosta agli screen reader
+        // (l'informazione della fase è già nel testo). Niente aria-label.
+        aria-hidden
         muted
         loop
         playsInline
-        preload="metadata"
+        // Su mobile carichiamo solo la clip attiva (solo=true) e niente
+        // metadata in anticipo per le altre: meno banda e meno decoder.
+        preload={solo ? "auto" : "metadata"}
         className="h-full w-full object-cover"
         style={{ filter: "saturate(0.62) brightness(0.46) contrast(1.06)" }}
       />
@@ -373,16 +380,30 @@ export function Process() {
           <StaticFallback />
         ) : (
           <>
-            {/* One full-bleed background clip per phase */}
-            {STEPS.map((s, i) => (
+            {/* Desktop: una clip full-bleed per fase con crossfade.
+                Mobile: montiamo SOLO la clip della fase attiva (1 video, 1
+                decoder, niente metadata per le altre) per risparmiare banda,
+                batteria e jank. Il fade tra fasi è dato dal remount + gradiente. */}
+            {isMobile ? (
               <PhaseBackground
-                key={s.num}
-                src={s.video}
-                alt={s.videoAlt}
-                active={active === i}
-                fast={isMobile}
+                key={step.num}
+                src={step.video}
+                alt={step.videoAlt}
+                active
+                fast
+                solo
               />
-            ))}
+            ) : (
+              STEPS.map((s, i) => (
+                <PhaseBackground
+                  key={s.num}
+                  src={s.video}
+                  alt={s.videoAlt}
+                  active={active === i}
+                  fast={false}
+                />
+              ))
+            )}
 
             {/* Left-weighted navy wash keeps the copy legible over footage */}
             <div

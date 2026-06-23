@@ -28,7 +28,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: .nvmrc
           cache: npm
 
       - name: Installa le dipendenze
@@ -36,6 +36,12 @@ jobs:
 
       - name: Build (export statico in ./out)
         run: npm run build
+
+      - name: Verifica artefatto (dominio custom + bypass Jekyll)
+        run: |
+          test -f out/CNAME || { echo "::error::out/CNAME mancante: il dominio custom andrebbe perso"; exit 1; }
+          test -f out/.nojekyll || { echo "::error::out/.nojekyll mancante: GitHub Pages applicherebbe Jekyll"; exit 1; }
+          test -f out/index.html || { echo "::error::out/index.html mancante: export non riuscito"; exit 1; }
 
       - name: Prepara l'artefatto per Pages
         uses: actions/upload-pages-artifact@v3

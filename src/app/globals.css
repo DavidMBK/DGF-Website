@@ -68,6 +68,19 @@
   }
   ::-webkit-scrollbar-thumb:hover { background: var(--color-brand-blue); }
 
+  /* Indicatore di focus ad alto contrasto e coerente per la navigazione da
+     tastiera (WCAG 2.4.7). Si applica solo al focus da tastiera, non al click. */
+  :focus-visible {
+    outline: 2px solid var(--color-brand-blue);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+  /* Sul fondo navy/scuro (footer, Process) serve un anello chiaro per restare
+     visibile. */
+  [data-nav-theme="dark"] :focus-visible {
+    outline-color: var(--color-brand-cyan);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     *, *::before, *::after {
@@ -93,12 +106,6 @@
   }
 }
 
-/* ─── Lenis smooth scroll ─────────────────────────────────── */
-html.lenis, html.lenis body { height: auto; }
-.lenis.lenis-smooth { scroll-behavior: auto !important; }
-.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
-.lenis.lenis-stopped { overflow: hidden; }
-
 /* ─── Animations ─────────────────────────────────────────── */
 @keyframes cursor-blink {
   0%, 49% { opacity: 1; }
@@ -114,13 +121,6 @@ html.lenis, html.lenis body { height: auto; }
   background-size: 200% 200%;
   animation: grad-shift 14s ease infinite;
 }
-
-@keyframes card-flash {
-  0%       { outline: 3px solid transparent; outline-offset: 3px; }
-  20%, 80% { outline: 3px solid var(--color-brand-cyan); outline-offset: 3px; }
-  100%     { outline: 3px solid transparent; outline-offset: 3px; }
-}
-.card-flash { animation: card-flash 1.2s var(--ease-expo) forwards; }
 
 @keyframes progress-fill {
   from { transform: scaleX(0); }

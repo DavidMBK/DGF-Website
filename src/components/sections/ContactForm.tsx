@@ -331,7 +331,7 @@ export function ContactForm() {
                       rows={3}
                       maxLength={5000}
                       placeholder="Due righe bastano: idee, obiettivi, scadenze…"
-                      className="w-full resize-none rounded-xl border border-hairline bg-canvas-soft px-3.5 py-2.5 text-[15px] leading-[1.6] text-ink shadow-sm outline-none transition-all duration-200 placeholder:text-body/50 focus:border-brand-blue focus:bg-white focus:ring-2 focus:ring-brand-blue/15"
+                      className="w-full resize-none rounded-xl border border-hairline bg-canvas-soft px-3.5 py-2.5 text-[15px] leading-[1.6] text-ink shadow-sm outline-none transition-all duration-200 placeholder:text-body focus:border-brand-blue focus:bg-white focus:ring-2 focus:ring-brand-blue/15"
                     />
                   </div>
 
@@ -403,7 +403,7 @@ function Field({ id, label, type = "text", required, placeholder, maxLength }: F
         required={required}
         placeholder={placeholder}
         maxLength={maxLength}
-        className="w-full rounded-xl border border-hairline bg-canvas-soft px-3.5 py-2.5 text-[15px] text-ink shadow-sm outline-none transition-all duration-200 placeholder:text-body/50 focus:border-brand-blue focus:bg-white focus:ring-2 focus:ring-brand-blue/15"
+        className="w-full rounded-xl border border-hairline bg-canvas-soft px-3.5 py-2.5 text-[15px] text-ink shadow-sm outline-none transition-all duration-200 placeholder:text-body focus:border-brand-blue focus:bg-white focus:ring-2 focus:ring-brand-blue/15"
       />
     </div>
   );
