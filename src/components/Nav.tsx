@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { navLinks } from "@/lib/site";
-import { scrollToSection } from "@/lib/scroll";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { useNavTheme } from "@/hooks/useNavTheme";
 
@@ -52,15 +52,7 @@ export function Nav() {
     };
   }, [mobileOpen]);
 
-  const handleMainLink = useCallback((href: string) => {
-    scrollToSection(href.replace("#", ""));
-    setMobileOpen(false);
-  }, []);
-
-  const handleContact = useCallback(() => {
-    scrollToSection("contatti");
-    setMobileOpen(false);
-  }, []);
+  const closeMobile = useCallback(() => setMobileOpen(false), []);
 
   return (
     <motion.header
@@ -86,11 +78,7 @@ export function Nav() {
           scrolled ? "h-14" : "h-16",
         ].join(" ")}
       >
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          aria-label="Torna alla home"
-          className="flex-shrink-0"
-        >
+        <Link href="/" aria-label="DGF Tech Solutions — home" className="flex-shrink-0">
           <Image
             src="/logo-dgf-trasparente.png"
             alt="DGF Tech Solutions"
@@ -103,14 +91,14 @@ export function Nav() {
               isDark ? "brightness-0 invert" : "",
             ].join(" ")}
           />
-        </button>
+        </Link>
 
         {/* Desktop nav */}
         <nav aria-label="Navigazione principale" className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
-            <button
+            <Link
               key={link.href}
-              onClick={() => handleMainLink(link.href)}
+              href={link.href}
               className={[
                 "group relative text-sm font-medium transition-colors duration-300",
                 isDark ? "text-white/80 hover:text-white" : "text-ink-soft hover:text-brand-navy",
@@ -124,10 +112,10 @@ export function Nav() {
                   isDark ? "bg-white" : "bg-brand-navy",
                 ].join(" ")}
               />
-            </button>
+            </Link>
           ))}
-          <button
-            onClick={handleContact}
+          <Link
+            href="/#contatti"
             className={[
               "group relative ml-2 px-5 py-2 rounded-full text-sm font-semibold overflow-hidden transition-colors duration-300",
               isDark
@@ -151,7 +139,7 @@ export function Nav() {
                 →
               </span>
             </span>
-          </button>
+          </Link>
         </nav>
 
         {/* Mobile toggle */}
@@ -186,22 +174,27 @@ export function Nav() {
           >
             <div className="max-w-[1180px] mx-auto px-5 sm:px-6 py-5 flex flex-col gap-4">
               {navLinks.map((link, i) => (
-                <motion.button
+                <motion.div
                   key={link.href}
-                  onClick={() => handleMainLink(link.href)}
                   initial={reducedMotion ? false : { opacity: 0, x: -8 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, ease, delay: reducedMotion ? 0 : 0.05 + i * 0.04 }}
-                  className={[
-                    "text-left text-sm font-medium transition-colors",
-                    isDark ? "text-white/80 hover:text-white" : "text-ink-soft hover:text-brand-navy",
-                  ].join(" ")}
                 >
-                  {link.label}
-                </motion.button>
+                  <Link
+                    href={link.href}
+                    onClick={closeMobile}
+                    className={[
+                      "block text-left text-sm font-medium transition-colors",
+                      isDark ? "text-white/80 hover:text-white" : "text-ink-soft hover:text-brand-navy",
+                    ].join(" ")}
+                  >
+                    {link.label}
+                  </Link>
+                </motion.div>
               ))}
-              <button
-                onClick={handleContact}
+              <Link
+                href="/#contatti"
+                onClick={closeMobile}
                 className={[
                   "mt-2 px-5 py-3 rounded-full text-sm font-semibold text-center transition-colors duration-200",
                   isDark
@@ -210,7 +203,7 @@ export function Nav() {
                 ].join(" ")}
               >
                 Contattaci
-              </button>
+              </Link>
             </div>
           </motion.div>
         )}

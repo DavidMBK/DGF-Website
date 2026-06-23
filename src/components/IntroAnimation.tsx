@@ -1,16 +1,20 @@
 "use client";
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 export function IntroAnimation() {
-  const [show, setShow] = useState(true);
+  // Intro solo sulla home: atterrando su una pagina interna (es. un articolo
+  // da Google) il contenuto deve essere immediato, senza overlay né scroll-lock.
+  const isHome = usePathname() === "/";
+  const [show, setShow] = useState(isHome);
   const [shrink, setShrink] = useState(false);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || !isHome) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setShow(false);

@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useRef, useState, useEffect, type ReactNode } from "react";
 import {
   motion,
@@ -388,6 +389,21 @@ export function StyleGallery() {
             </motion.div>
           </>
         )}
+
+        <div className="mt-14 flex justify-center">
+          <Link
+            href="/portfolio"
+            className="group inline-flex items-center gap-2.5 rounded-full bg-white/10 py-3 pl-6 pr-2 text-sm font-semibold text-white ring-1 ring-white/15 backdrop-blur-sm transition-colors duration-300 hover:bg-white/15"
+          >
+            Esplora tutti i progetti
+            <span
+              aria-hidden
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-cyan/20 text-brand-cyan transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5"
+            >
+              →
+            </span>
+          </Link>
+        </div>
 
       </div>
 

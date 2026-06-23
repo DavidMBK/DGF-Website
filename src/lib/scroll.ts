@@ -8,13 +8,6 @@ export function scrollToSection(id: string) {
 }
 
 // La sezione Servizi è una vista a tab: l'id del servizio non esiste come
-// ancora nel DOM. Per i link "Servizi" del footer notifichiamo la sezione di
-// attivare la tab giusta (evento) e poi scrolliamo alla sezione #servizi.
+// ancora nel DOM. I link "Servizi" del footer puntano a /#servizi e dispatchano
+// questo evento, che la sezione Servizi ascolta per attivare la tab giusta.
 export const SELECT_SERVICE_EVENT = "dgf:select-service";
-
-export function selectService(id: string) {
-  if (typeof window !== "undefined") {
-    window.dispatchEvent(new CustomEvent(SELECT_SERVICE_EVENT, { detail: id }));
-  }
-  scrollToSection("servizi");
-}

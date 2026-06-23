@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { SELECT_SERVICE_EVENT } from "@/lib/scroll";
@@ -34,7 +34,7 @@ const SERVICES: readonly Service[] = [
     navLabel: "Siti web",
     tagline: "Presenza digitale costruita per durare",
     description:
-      "Landing page, siti aziendali e portali informativi pensati per performance, SEO e accessibilità. Ogni pagina è un blocco modulare, testato e ottimizzato fino al dettaglio.",
+      "Landing, siti aziendali e portali che si caricano in un istante e si posizionano su Google. Li costruiamo a blocchi modulari, testati fino al dettaglio: una vetrina veloce, accessibile e pensata per portarti contatti reali — non solo per fare bella figura.",
     keypoints: [
       "Architettura modulare a componenti",
       "Core Web Vitals nel target",
@@ -48,9 +48,9 @@ const SERVICES: readonly Service[] = [
     id: "svc-ecommerce",
     title: "E-commerce",
     navLabel: "E-commerce",
-    tagline: "Vendita online che converte",
+    tagline: "Vendere online davvero, non solo esserci",
     description:
-      "Negozi online su misura o su piattaforme consolidate. Catalogo, pagamenti e checkout disegnati per ridurre attriti e aumentare il valore medio dell'ordine.",
+      "Negozi su misura o su piattaforme consolidate, disegnati attorno al percorso d'acquisto reale. Catalogo, pagamenti e checkout senza attriti per far crescere conversioni e valore medio dell'ordine — e che aggiorni in autonomia, senza dipendere da nessuno.",
     keypoints: [
       "Catalogo e schede prodotto curate",
       "Checkout a basso attrito",
@@ -66,7 +66,7 @@ const SERVICES: readonly Service[] = [
     navLabel: "UI / UX",
     tagline: "Interfacce pensate per le persone",
     description:
-      "Dal wireframe iniziale al componente rifinito: ricerca, prototipi interattivi e design system pronti per lo sviluppo. Le forme cambiano, la chiarezza resta.",
+      "Dalla ricerca al prototipo interattivo, fino al design system pronto allo sviluppo. Mettiamo ordine nei flussi e togliamo gli attriti, così chi usa il prodotto trova subito quello che cerca. Le mode passano, la chiarezza resta.",
     keypoints: [
       "User research e flussi",
       "Wireframe e prototipi interattivi",
@@ -82,7 +82,7 @@ const SERVICES: readonly Service[] = [
     navLabel: "Software",
     tagline: "Sistemi che collegano i tuoi processi",
     description:
-      "Applicazioni web e mobile, dashboard, gestionali e API personalizzate. Architetture pensate come una rete di nodi che comunicano in modo prevedibile.",
+      "App web e mobile, dashboard, gestionali e API su misura che sostituiscono fogli di calcolo e strumenti scollegati. Un'unica fonte di verità, architetture scalabili e integrazioni con ciò che già usi: meno lavoro manuale, più controllo sui tuoi processi.",
     keypoints: [
       "Architetture scalabili",
       "API REST personalizzate",
@@ -98,7 +98,7 @@ const SERVICES: readonly Service[] = [
     navLabel: "AI",
     tagline: "Intelligenza che mette ordine nei dati",
     description:
-      "Integrazione di modelli linguistici, chatbot intelligenti e automazioni per ridurre il lavoro manuale ripetitivo. Da informazione sparsa a pattern strutturato.",
+      "Assistenti conversazionali, ricerca intelligente sui tuoi documenti e automazioni che eliminano il lavoro ripetitivo. Colleghiamo i modelli ai tuoi dati reali, con attenzione a qualità, costi e privacy: l'AI che fa risparmiare ore, non quella che fa scena.",
     keypoints: [
       "Assistenti conversazionali su misura",
       "Pipeline RAG su dati aziendali",
@@ -114,7 +114,7 @@ const SERVICES: readonly Service[] = [
     navLabel: "Consulenza",
     tagline: "Dal caos alla strategia",
     description:
-      "Analisi dello stack esistente, roadmap tecnica e supporto strategico. Trasformiamo decisioni sparse in una traiettoria chiara, sostenibile e misurabile.",
+      "Audit dello stack esistente, roadmap tecnica e affiancamento al team. Trasformiamo decisioni sparse in una traiettoria chiara e sostenibile, e ti aiutiamo a scegliere le tecnologie giuste — senza vincoli, senza fuffa, con un occhio sempre ai costi.",
     keypoints: [
       "Audit tecnico dello stack",
       "Roadmap di prodotto",
@@ -140,12 +140,35 @@ function DetailView({
   reducedMotion,
 }: DetailViewProps) {
   const Visual = service.Visual;
+  const tablistRef = useRef<HTMLDivElement>(null);
+
+  // Tab pattern W3C APG: frecce per spostarsi (con wrap), Home/End agli estremi,
+  // attivazione automatica della tab a fuoco.
+  function onTabKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    const keys = ["ArrowLeft", "ArrowRight", "Home", "End"];
+    if (!keys.includes(e.key)) return;
+    e.preventDefault();
+    const ids = services.map((s) => s.id);
+    const cur = ids.indexOf(service.id);
+    let next = cur;
+    if (e.key === "ArrowRight") next = (cur + 1) % ids.length;
+    else if (e.key === "ArrowLeft") next = (cur - 1 + ids.length) % ids.length;
+    else if (e.key === "Home") next = 0;
+    else if (e.key === "End") next = ids.length - 1;
+    onSelect(ids[next]);
+    tablistRef.current
+      ?.querySelectorAll<HTMLButtonElement>('[role="tab"]')
+      ?.[next]?.focus();
+  }
 
   return (
     <div>
       <div className="border-b border-hairline">
-        <nav
+        <div
+          ref={tablistRef}
+          role="tablist"
           aria-label="Naviga tra i servizi"
+          onKeyDown={onTabKeyDown}
           className="-mb-px flex flex-wrap"
         >
           {services.map((s) => {
@@ -154,8 +177,12 @@ function DetailView({
               <button
                 key={s.id}
                 type="button"
+                role="tab"
+                id={`tab-${s.id}`}
+                aria-selected={isActive}
+                aria-controls="servizi-panel"
+                tabIndex={isActive ? 0 : -1}
                 onClick={() => onSelect(s.id)}
-                aria-current={isActive ? "true" : undefined}
                 className={[
                   "relative whitespace-nowrap px-3 py-3 text-[13px] font-medium tracking-[-0.005em] transition-colors duration-300 sm:px-4",
                   isActive
@@ -175,10 +202,16 @@ function DetailView({
               </button>
             );
           })}
-        </nav>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 pt-6 sm:grid-cols-2 sm:items-center sm:gap-10 sm:pt-12 lg:gap-20 lg:pt-16">
+      <div
+        id="servizi-panel"
+        role="tabpanel"
+        aria-labelledby={`tab-${service.id}`}
+        tabIndex={0}
+        className="grid grid-cols-1 gap-6 pt-6 outline-none sm:grid-cols-2 sm:items-center sm:gap-10 sm:pt-12 lg:gap-20 lg:pt-16"
+      >
         <motion.div
           key={`${service.id}-visual`}
           initial={reducedMotion ? false : { opacity: 0, x: -18 }}

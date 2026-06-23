@@ -1,10 +1,18 @@
 "use client";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { scrollToSection } from "@/lib/scroll";
 import { HeroBackground } from "@/components/HeroBackground";
 
 const ease = [0.22, 1, 0.36, 1] as const;
+
+// Prova/valori front-loaded vicino all'hero (impegni reali, non metriche inventate).
+const HERO_PROOF = [
+  { value: "Un solo interlocutore", label: "dall'idea al lancio" },
+  { value: "Risposta in 24h", label: "a ogni nuova richiesta" },
+  { value: "Codice di proprietà", label: "il progetto resta tuo" },
+];
 
 const TITLE_WORDS = [
   { text: "Costruiamo", blue: false },
@@ -79,24 +87,24 @@ export function Hero() {
             initial={reducedMotion ? false : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease, delay: INTRO_DELAY + 0.95 }}
-            className="leading-relaxed text-[1.0625rem] sm:text-[1.125rem] max-w-[560px] text-body"
+            className="leading-relaxed text-[1.0625rem] sm:text-[1.1875rem] max-w-[600px] text-body"
           >
-            Siti, e-commerce, app e soluzioni AI su misura. Dietro ogni
-            progetto trovi sempre chi lo progetta e ne scrive il codice.
+            Dall&apos;idea al lancio: siti, e-commerce, app e soluzioni AI su misura,
+            costruiti da chi scrive davvero il codice.
           </motion.p>
 
           <motion.div
             initial={reducedMotion ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease, delay: INTRO_DELAY + 1.2 }}
-            className="mt-12"
+            className="mt-11 flex flex-col items-center gap-3 sm:flex-row"
           >
             <button
               type="button"
               onClick={() => scrollToSection("contatti")}
-              className="group inline-flex items-center gap-2 px-7 py-4 bg-brand-navy text-white text-sm font-semibold rounded-full hover:bg-brand-blue transition-colors duration-200 shadow-[0_8px_24px_-8px_rgba(5,75,119,0.5)]"
+              className="group inline-flex items-center gap-2 rounded-full bg-brand-navy px-7 py-4 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(5,75,119,0.5)] transition-colors duration-200 hover:bg-brand-blue"
             >
-              <span>Richiedi una consulenza gratuita</span>
+              <span>Parliamo del tuo progetto</span>
               <span
                 aria-hidden
                 className="inline-block transition-transform duration-300 ease-out group-hover:translate-x-1"
@@ -104,7 +112,36 @@ export function Hero() {
                 →
               </span>
             </button>
+            <Link
+              href="/portfolio"
+              className="group inline-flex items-center gap-2 rounded-full px-7 py-4 text-sm font-semibold text-brand-navy ring-1 ring-brand-blue/20 transition-colors duration-200 hover:ring-brand-blue/40"
+            >
+              <span>Guarda i lavori</span>
+              <span
+                aria-hidden
+                className="inline-block transition-transform duration-300 ease-out group-hover:translate-x-1"
+              >
+                →
+              </span>
+            </Link>
           </motion.div>
+
+          {/* Prova/valori front-loaded vicino all'hero */}
+          <motion.dl
+            initial={reducedMotion ? false : { opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease, delay: INTRO_DELAY + 1.45 }}
+            className="mt-14 grid w-full max-w-[640px] grid-cols-1 gap-px overflow-hidden rounded-2xl bg-hairline/60 ring-1 ring-brand-blue/10 sm:grid-cols-3"
+          >
+            {HERO_PROOF.map((p) => (
+              <div key={p.value} className="bg-canvas/90 px-5 py-5 text-center backdrop-blur-sm">
+                <dt className="font-display text-[15px] font-semibold tracking-[-0.01em] text-brand-navy">
+                  {p.value}
+                </dt>
+                <dd className="mt-1 text-[12.5px] leading-snug text-body">{p.label}</dd>
+              </div>
+            ))}
+          </motion.dl>
         </div>
       </div>
     </section>

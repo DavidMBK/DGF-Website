@@ -36,6 +36,8 @@
 
   html {
     scroll-behavior: smooth;
+    /* Le ancore (#servizi, #contatti…) non devono finire sotto la navbar fissa. */
+    scroll-padding-top: 5.5rem;
     color-scheme: light;
     -webkit-text-size-adjust: 100%;
     /* `clip` blocca lo scroll orizzontale su mobile SENZA creare un contenitore

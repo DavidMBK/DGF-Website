@@ -1,9 +1,12 @@
 import { Nav } from "@/components/Nav";
 import { Hero } from "@/components/sections/Hero";
 import { StyleGallery } from "@/components/sections/StyleGallery";
+import { WhyUs } from "@/components/sections/WhyUs";
 import { Consulenza } from "@/components/sections/Consulenza";
 import { Services } from "@/components/sections/Services";
+import { TechStack } from "@/components/sections/TechStack";
 import { Process } from "@/components/sections/Process";
+import { Faq } from "@/components/sections/Faq";
 import { ContactForm } from "@/components/sections/ContactForm";
 import { Footer } from "@/components/Footer";
 
@@ -23,9 +26,12 @@ export default function HomePage() {
       <main id="main" tabIndex={-1}>
         <Hero />
         <StyleGallery />
+        <WhyUs />
         <Consulenza />
         <Services />
+        <TechStack />
         <Process />
+        <Faq />
         <ContactForm />
       </main>
       <Footer />

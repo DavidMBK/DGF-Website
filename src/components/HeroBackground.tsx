@@ -216,9 +216,9 @@ const FRONT_THRESHOLD = -0.06;
 
 export function HeroBackground() {
   const reducedMotion = usePrefersReducedMotion();
-  // Su mobile congeliamo il globo: niente loop RAF né re-render dell'SVG a
-  // 60fps (il costo CPU/batteria maggiore). Su touch non c'è parallax mouse e
-  // lo spin lento è secondario, quindi un globo statico e nitido è il compromesso.
+  // Globo: 60fps pieni su PC, completamente statico su mobile (il re-render
+  // dell'SVG a ogni frame è troppo pesante per i telefoni). Statico anche con
+  // "riduci animazioni".
   const isMobile = useIsMobile();
   const animate = !reducedMotion && !isMobile;
   const containerRef = useRef<HTMLDivElement>(null);
@@ -255,6 +255,8 @@ export function HeroBackground() {
     };
     window.addEventListener("mousemove", handleMouse);
 
+    // 60fps pieni: il loop gira solo su PC (su mobile `animate` è false e
+    // il globo resta statico).
     let raf = 0;
     let last = performance.now();
     const tick = (now: number) => {

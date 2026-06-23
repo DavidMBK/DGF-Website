@@ -399,7 +399,11 @@ function Device({ progress, reducedMotion, fitLaptop, fitPhone, compact }: Devic
 
 export function Consulenza() {
   const reducedMotion = usePrefersReducedMotion();
+  // isMobile (≤1023) regola solo il ridimensionamento del dispositivo.
+  // isPhone (≤767) decide se il morph dinamico è attivo: lo teniamo su
+  // tablet e desktop, statico solo sui telefoni veri (dove laggava).
   const isMobile = useIsMobile();
+  const isPhone = useIsMobile(767);
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const scrollYProgress = useMotionValue(0);
@@ -424,18 +428,16 @@ export function Consulenza() {
     return () => window.removeEventListener("resize", measure);
   }, [isMobile]);
 
-  // Niente morph guidato dallo scroll quando:
+  // Niente morph guidato dallo scroll solo quando:
   //  - reduced-motion (accessibilità, WCAG 2.3.3), oppure
-  //  - mobile: il morph anima width/height/padding ad ogni frame (layout
-  //    reflow continuo) → scatti durante lo scroll. Su mobile mostriamo il
-  //    dispositivo statico (il telefono) e la sezione scorre normalmente,
-  //    senza sticky/scroll-jack.
-  const staticMode = reducedMotion || isMobile;
+  //  - telefono vero (<768px): lì il morph che anima width/height ogni frame
+  //    scattava. Su tablet/desktop il morph dinamico resta attivo.
+  const staticMode = reducedMotion || isPhone;
 
   useEffect(() => {
     if (staticMode) {
-      // Mobile → telefono (stato naturale su smartphone); desktop reduced-motion → laptop.
-      scrollYProgress.set(isMobile ? 1 : 0);
+      // Telefono → telefono (stato naturale); desktop reduced-motion → laptop.
+      scrollYProgress.set(isPhone ? 1 : 0);
       return;
     }
     const el = sectionRef.current;
@@ -476,7 +478,7 @@ export function Consulenza() {
       io.disconnect();
       cancelAnimationFrame(rafId);
     };
-  }, [scrollYProgress, staticMode, isMobile]);
+  }, [scrollYProgress, staticMode, isPhone]);
 
   return (
     <section
