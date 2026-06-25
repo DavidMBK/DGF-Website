@@ -398,7 +398,7 @@ export function StyleGallery() {
             Esplora tutti i progetti
             <span
               aria-hidden
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-cyan/20 text-brand-cyan transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-cyan/20 text-brand-cyan transition-transform duration-300 ease-out-soft group-hover:translate-x-0.5"
             >
               →
             </span>

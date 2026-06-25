@@ -137,7 +137,7 @@ function Frame({ children }: { children: React.ReactNode }) {
         className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-brand-cyan/15"
       />
       <div
-        className="absolute inset-0 transition-transform duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform"
+        className="absolute inset-0 transition-transform duration-[700ms] ease-expo will-change-transform"
         style={{ transform: "translate3d(var(--tx), var(--ty), 0)" }}
       >
         <svg

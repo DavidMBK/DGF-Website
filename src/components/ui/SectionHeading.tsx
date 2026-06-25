@@ -34,19 +34,15 @@ export function SectionHeading({
       ].join(" ")}
     >
       {eyebrow && (
-        <span className="inline-flex items-center gap-3 font-mono text-[12px] uppercase tracking-[0.32em] text-brand-blue">
+        <span className={["eyebrow inline-flex items-center gap-3", center ? "justify-center" : ""].join(" ")}>
           <span className="h-px w-10 bg-gradient-to-r from-transparent to-brand-blue/60" />
           {eyebrow}
+          {center && <span className="h-px w-10 bg-gradient-to-l from-transparent to-brand-blue/60" />}
         </span>
       )}
       <Heading
         id={id}
-        className={[
-          "mt-5 font-display font-semibold tracking-[-0.03em] text-ink",
-          as === "h1"
-            ? "text-[clamp(2.4rem,6vw,4.4rem)] leading-[1.02]"
-            : "text-[clamp(1.9rem,4.5vw,3.3rem)] leading-[1.05]",
-        ].join(" ")}
+        className={["mt-5 text-ink", as === "h1" ? "display-xl" : "heading-lg"].join(" ")}
       >
         {title}
       </Heading>

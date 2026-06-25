@@ -16,9 +16,8 @@ const SERVICE_LINKS = [
 ] as const;
 
 const EXPLORE_LINKS = [
-  { label: "Portfolio", href: "/portfolio" },
+  { label: "Garanzie", href: "/#garanzie" },
   { label: "Chi siamo", href: "/chi-siamo" },
-  { label: "Blog", href: "/blog" },
 ] as const;
 
 const STUDIO_LINKS = [
@@ -160,6 +159,12 @@ export function Footer() {
             {year} DGF Tech Solutions.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
+            <a
+              href="mailto:founders.dgftechsolutions@gmail.com"
+              className="text-xs font-medium text-white/75 transition-colors duration-200 hover:text-brand-cyan"
+            >
+              founders.dgftechsolutions@gmail.com
+            </a>
             <p className="text-xs text-white/70">
               P.IVA 03882320835
             </p>

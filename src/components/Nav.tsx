@@ -80,6 +80,7 @@ export function Nav() {
       >
         <Link href="/" aria-label="DGF Tech Solutions — home" className="flex-shrink-0">
           <Image
+            id="nav-logo"
             src="/logo-dgf-trasparente.png"
             alt="DGF Tech Solutions"
             width={140}
@@ -108,7 +109,7 @@ export function Nav() {
               <span
                 aria-hidden
                 className={[
-                  "pointer-events-none absolute -bottom-0.5 left-0 right-0 h-[1.5px] origin-center scale-x-0 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100",
+                  "pointer-events-none absolute -bottom-0.5 left-0 right-0 h-[1.5px] origin-center scale-x-0 transition-transform duration-300 ease-expo group-hover:scale-x-100",
                   isDark ? "bg-white" : "bg-brand-navy",
                 ].join(" ")}
               />
@@ -126,7 +127,7 @@ export function Nav() {
             <span
               aria-hidden
               className={[
-                "absolute inset-0 rounded-full origin-left scale-x-0 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100",
+                "absolute inset-0 rounded-full origin-left scale-x-0 transition-transform duration-500 ease-expo group-hover:scale-x-100",
                 isDark ? "bg-brand-cyan/25" : "bg-brand-blue",
               ].join(" ")}
             />

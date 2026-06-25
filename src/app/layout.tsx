@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono, Cormorant, Playfair_Display } from "next/font/google";
-import { IntroAnimation } from "@/components/IntroAnimation";
+import { IntroScene } from "@/components/IntroScene";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -158,7 +158,7 @@ export default function RootLayout({
             }),
           }}
         />
-        <IntroAnimation />
+        <IntroScene />
         {children}
       </body>
     </html>

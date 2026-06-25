@@ -15,6 +15,10 @@ const basePath = process.env.PAGES_BASE_PATH || "";
 
 const nextConfig: NextConfig = {
   output: "export",
+  // Espone il basePath al client: asset caricati a mano (es. new Image().src
+  // su canvas) NON vengono riscritti automaticamente da Next, quindi serve
+  // poterlo prefissare a runtime.
+  env: { NEXT_PUBLIC_BASE_PATH: basePath },
   // L'ottimizzatore immagini di Next ha bisogno di un server: con l'export
   // statico va disattivato e le immagini vengono servite così come sono.
   images: { unoptimized: true },

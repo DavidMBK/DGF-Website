@@ -38,12 +38,12 @@ export function PageHeader({ eyebrow, title, intro, breadcrumbs, children }: Pro
         {breadcrumbs && <Breadcrumbs items={breadcrumbs} />}
         <Reveal>
           {eyebrow && (
-            <span className="inline-flex items-center gap-3 font-mono text-[12px] uppercase tracking-[0.32em] text-brand-blue">
+            <span className="eyebrow inline-flex items-center gap-3">
               <span className="h-px w-10 bg-gradient-to-r from-transparent to-brand-blue/60" />
               {eyebrow}
             </span>
           )}
-          <h1 className="mt-5 max-w-[20ch] font-display text-[clamp(2.4rem,6vw,4.4rem)] font-semibold leading-[1.02] tracking-[-0.03em] text-ink">
+          <h1 className="display-xl mt-5 max-w-[20ch] text-ink">
             {title}
           </h1>
           {intro && (

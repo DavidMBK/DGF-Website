@@ -361,7 +361,7 @@ export function Process() {
       aria-labelledby="processo-heading"
       data-nav-theme="dark"
       className="relative bg-brand-navy"
-      style={{ height: reducedMotion ? "auto" : "500vh" }}
+      style={{ height: reducedMotion ? "auto" : "360vh" }}
     >
       <div
         className={[

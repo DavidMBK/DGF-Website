@@ -4,7 +4,6 @@
 // vivono in src/app/layout.tsx, unica fonte.
 export const navLinks = [
   { label: "Servizi", href: "/#servizi" },
-  { label: "Portfolio", href: "/portfolio" },
+  { label: "Come lavoriamo", href: "/#processo" },
   { label: "Chi siamo", href: "/chi-siamo" },
-  { label: "Blog", href: "/blog" },
 ] as const;

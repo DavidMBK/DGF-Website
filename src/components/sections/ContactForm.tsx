@@ -104,7 +104,7 @@ export function ContactForm() {
       id="contatti"
       aria-labelledby="contact-heading"
       data-nav-theme="light"
-      className="relative overflow-hidden bg-canvas-soft py-8 sm:py-16 lg:py-36"
+      className="relative overflow-hidden bg-canvas-soft py-20 sm:py-28"
     >
       <div
         aria-hidden
@@ -221,7 +221,7 @@ export function ContactForm() {
                   visible: { opacity: 1, y: 0 },
                 }}
                 transition={{ duration: 0.75, ease }}
-                className="mt-6 hidden max-w-[40ch] text-[16px] leading-[1.65] text-body sm:block"
+                className="mt-6 max-w-[40ch] text-[16px] leading-[1.65] text-body"
               >
                 Niente preventivi automatici, niente commerciali di passaggio.
                 Raccontaci il progetto in due righe: ti rispondiamo noi, di persona.
@@ -233,7 +233,7 @@ export function ContactForm() {
                   visible: { opacity: 1, y: 0 },
                 }}
                 transition={{ duration: 0.75, ease }}
-                className="mt-9 hidden space-y-3.5 lg:mt-auto lg:block lg:pt-10"
+                className="mt-8 space-y-3.5 lg:mt-auto lg:pt-10"
               >
                 {[
                   "Entro 24 ore leggiamo la tua richiesta",
@@ -355,7 +355,7 @@ export function ContactForm() {
                     <button
                       type="submit"
                       disabled={status === "sending"}
-                      className="group/btn inline-flex w-full items-center justify-center gap-2.5 rounded-full bg-brand-navy px-6 py-3 text-[14px] font-semibold text-white shadow-[0_12px_28px_-10px_rgba(10,30,60,0.5)] transition-all duration-300 hover:bg-brand-blue disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+                      className="group/btn inline-flex w-full items-center justify-center gap-2.5 rounded-full bg-brand-navy px-6 py-3 text-[14px] font-semibold text-white shadow-brand transition-all duration-300 hover:bg-brand-blue disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
                     >
                       {status === "sending" ? "Invio in corso…" : "Invia richiesta"}
                       {status !== "sending" && (

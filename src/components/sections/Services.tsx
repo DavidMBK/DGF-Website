@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { Globe, ShoppingBag, Palette, Code2, Sparkles, Compass } from "lucide-react";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { SELECT_SERVICE_EVENT } from "@/lib/scroll";
 import {
@@ -15,6 +16,7 @@ import {
 const ease = [0.22, 1, 0.36, 1] as const;
 
 type VisualComponent = () => React.ReactElement;
+type IconComponent = typeof Globe;
 
 interface Service {
   id: string;
@@ -24,6 +26,7 @@ interface Service {
   description: string;
   keypoints: readonly string[];
   tags: readonly string[];
+  Icon: IconComponent;
   Visual: VisualComponent;
 }
 
@@ -42,6 +45,7 @@ const SERVICES: readonly Service[] = [
       "Accessibilità WCAG 2.2 AA",
     ],
     tags: ["Next.js", "Siti Custom", "Astro"],
+    Icon: Globe,
     Visual: SitiVisual,
   },
   {
@@ -58,6 +62,7 @@ const SERVICES: readonly Service[] = [
       "Analytics e funnel di conversione",
     ],
     tags: ["Shopify", "Headless", "Pagamenti"],
+    Icon: ShoppingBag,
     Visual: EcommerceVisual,
   },
   {
@@ -74,6 +79,7 @@ const SERVICES: readonly Service[] = [
       "Handoff diretto agli sviluppatori",
     ],
     tags: ["Figma", "Design System", "Prototyping"],
+    Icon: Palette,
     Visual: UiuxVisual,
   },
   {
@@ -90,6 +96,7 @@ const SERVICES: readonly Service[] = [
       "Integrazioni con sistemi esistenti",
     ],
     tags: ["React", "Node", "Python"],
+    Icon: Code2,
     Visual: SoftwareVisual,
   },
   {
@@ -106,6 +113,7 @@ const SERVICES: readonly Service[] = [
       "Valutazione qualità e costi",
     ],
     tags: ["LLM", "RAG", "Automazioni"],
+    Icon: Sparkles,
     Visual: AiVisual,
   },
   {
@@ -122,155 +130,184 @@ const SERVICES: readonly Service[] = [
       "Affiancamento al team",
     ],
     tags: ["Strategia", "Audit", "Roadmap"],
+    Icon: Compass,
     Visual: ConsulenzaVisual,
   },
 ] as const;
 
-interface DetailViewProps {
-  service: Service;
-  services: readonly Service[];
-  onSelect: (id: string) => void;
-  reducedMotion: boolean;
-}
-
-function DetailView({
-  service,
+/** Griglia panoramica = tablist accessibile (W3C APG): a colpo d'occhio i 6
+ *  servizi, e funge da selettore con navigazione da frecce/Home/End. */
+function ServiceOverview({
   services,
+  activeId,
   onSelect,
-  reducedMotion,
-}: DetailViewProps) {
-  const Visual = service.Visual;
-  const tablistRef = useRef<HTMLDivElement>(null);
+}: {
+  services: readonly Service[];
+  activeId: string;
+  onSelect: (id: string) => void;
+}) {
+  const listRef = useRef<HTMLDivElement>(null);
 
-  // Tab pattern W3C APG: frecce per spostarsi (con wrap), Home/End agli estremi,
-  // attivazione automatica della tab a fuoco.
-  function onTabKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
-    const keys = ["ArrowLeft", "ArrowRight", "Home", "End"];
+  function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    const keys = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"];
     if (!keys.includes(e.key)) return;
     e.preventDefault();
     const ids = services.map((s) => s.id);
-    const cur = ids.indexOf(service.id);
+    const cur = ids.indexOf(activeId);
     let next = cur;
-    if (e.key === "ArrowRight") next = (cur + 1) % ids.length;
-    else if (e.key === "ArrowLeft") next = (cur - 1 + ids.length) % ids.length;
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") next = (cur + 1) % ids.length;
+    else if (e.key === "ArrowLeft" || e.key === "ArrowUp") next = (cur - 1 + ids.length) % ids.length;
     else if (e.key === "Home") next = 0;
     else if (e.key === "End") next = ids.length - 1;
     onSelect(ids[next]);
-    tablistRef.current
+    listRef.current
       ?.querySelectorAll<HTMLButtonElement>('[role="tab"]')
       ?.[next]?.focus();
   }
 
   return (
-    <div>
-      <div className="border-b border-hairline">
-        <div
-          ref={tablistRef}
-          role="tablist"
-          aria-label="Naviga tra i servizi"
-          onKeyDown={onTabKeyDown}
-          className="-mb-px flex flex-wrap"
-        >
-          {services.map((s) => {
-            const isActive = s.id === service.id;
-            return (
-              <button
-                key={s.id}
-                type="button"
-                role="tab"
-                id={`tab-${s.id}`}
-                aria-selected={isActive}
-                aria-controls="servizi-panel"
-                tabIndex={isActive ? 0 : -1}
-                onClick={() => onSelect(s.id)}
-                className={[
-                  "relative whitespace-nowrap px-3 py-3 text-[13px] font-medium tracking-[-0.005em] transition-colors duration-300 sm:px-4",
-                  isActive
-                    ? "text-brand-navy"
-                    : "text-body/55 hover:text-ink-soft",
-                ].join(" ")}
-              >
-                {s.navLabel}
-                {isActive && (
-                  <motion.span
-                    layoutId="active-tab-underline"
-                    aria-hidden
-                    transition={{ duration: 0.45, ease }}
-                    className="absolute inset-x-3 -bottom-px h-[2px] rounded-full bg-brand-blue"
-                  />
-                )}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      <div
-        id="servizi-panel"
-        role="tabpanel"
-        aria-labelledby={`tab-${service.id}`}
-        tabIndex={0}
-        className="grid grid-cols-1 gap-6 pt-6 outline-none sm:grid-cols-2 sm:items-center sm:gap-10 sm:pt-12 lg:gap-20 lg:pt-16"
-      >
-        <motion.div
-          key={`${service.id}-visual`}
-          initial={reducedMotion ? false : { opacity: 0, x: -18 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="order-1 mx-auto flex w-full max-w-[300px] items-center justify-center sm:mx-0 sm:max-w-none sm:justify-start"
-          transition={{ duration: 0.5, ease }}
-        >
-          <Visual />
-        </motion.div>
-
-        <motion.div
-          key={`${service.id}-content`}
-          initial={reducedMotion ? false : { opacity: 0, x: 18 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.06, ease }}
-          className="order-2 text-center sm:text-left"
-        >
-          <h3 className="font-display text-[clamp(1.85rem,4vw,3.25rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-ink">
-            {service.title}
-          </h3>
-
-          <p className="mt-2 text-[14px] italic text-brand-blue sm:mt-3 sm:text-[15px]">
-            {service.tagline}
-          </p>
-
-          <p className="mt-6 hidden max-w-[520px] text-[16px] leading-[1.7] text-body sm:block">
-            {service.description}
-          </p>
-
-          <ul className="mt-9 hidden space-y-3.5 sm:block" role="list">
-            {service.keypoints.map((kp, i) => (
-              <motion.li
-                key={kp}
-                initial={reducedMotion ? false : { opacity: 0, x: 8 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.4, delay: 0.25 + i * 0.06, ease }}
-                className="flex items-center gap-4 text-[14.5px] text-ink-soft"
-              >
-                <span
-                  aria-hidden
-                  className="h-px w-6 shrink-0 bg-gradient-to-r from-brand-blue/70 to-brand-cyan/30"
-                />
-                <span>{kp}</span>
-              </motion.li>
-            ))}
-          </ul>
-
-          <div className="mt-10 hidden flex-wrap gap-2 sm:flex">
-            {service.tags.map((t) => (
-              <span
-                key={t}
-                className="rounded-full border border-hairline bg-canvas-soft/40 px-3 py-1 text-[11px] font-medium tracking-tight text-ink-soft/80"
-              >
-                {t}
+    <div
+      ref={listRef}
+      role="tablist"
+      aria-label="I nostri servizi"
+      onKeyDown={onKeyDown}
+      className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3"
+    >
+      {services.map((s) => {
+        const isActive = s.id === activeId;
+        return (
+          <button
+            key={s.id}
+            type="button"
+            role="tab"
+            id={`tab-${s.id}`}
+            aria-selected={isActive}
+            aria-controls="servizi-panel"
+            tabIndex={isActive ? 0 : -1}
+            onClick={() => onSelect(s.id)}
+            className={[
+              "group relative flex cursor-pointer items-start gap-3.5 rounded-2xl border p-4 text-left transition-all duration-300 ease-out-soft sm:p-5",
+              isActive
+                ? "border-brand-blue/30 bg-brand-50/70 shadow-[0_10px_24px_-14px_rgba(8,40,64,0.25)]"
+                : "border-hairline bg-white hover:-translate-y-0.5 hover:border-brand-blue/20 hover:shadow-[0_10px_24px_-16px_rgba(8,40,64,0.2)]",
+            ].join(" ")}
+          >
+            <span
+              className={[
+                "flex h-10 w-10 flex-none items-center justify-center rounded-xl ring-1 transition-colors duration-300",
+                isActive
+                  ? "bg-gradient-to-br from-brand-navy to-brand-blue text-white ring-white/15"
+                  : "bg-brand-50 text-brand-blue ring-brand-blue/10",
+              ].join(" ")}
+            >
+              <s.Icon size={18} strokeWidth={1.8} />
+            </span>
+            <span className="min-w-0">
+              <span className="block font-display text-[15px] font-semibold tracking-[-0.01em] text-ink">
+                {s.title}
               </span>
-            ))}
-          </div>
-        </motion.div>
-      </div>
+              <span className="mt-0.5 block text-[12.5px] leading-snug text-body">
+                {s.tagline}
+              </span>
+            </span>
+            {isActive && (
+              <motion.span
+                layoutId="svc-active-bar"
+                aria-hidden
+                transition={{ duration: 0.4, ease }}
+                className="absolute inset-y-3 left-0 w-[3px] rounded-full bg-gradient-to-b from-brand-blue to-brand-cyan"
+              />
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Pannello di dettaglio del servizio attivo — visibile anche su mobile. */
+function ServicePanel({
+  service,
+  reducedMotion,
+}: {
+  service: Service;
+  reducedMotion: boolean;
+}) {
+  const Visual = service.Visual;
+  return (
+    <div
+      id="servizi-panel"
+      role="tabpanel"
+      aria-labelledby={`tab-${service.id}`}
+      tabIndex={0}
+      className="mt-6 grid grid-cols-1 items-center gap-8 rounded-[1.75rem] border border-hairline bg-white p-6 outline-none sm:p-9 lg:mt-8 lg:grid-cols-2 lg:gap-14 lg:p-12"
+    >
+      <motion.div
+        key={`${service.id}-visual`}
+        initial={reducedMotion ? false : { opacity: 0, scale: 0.96 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, ease }}
+        className="order-1 mx-auto flex w-full max-w-[320px] items-center justify-center lg:max-w-none"
+      >
+        <Visual />
+      </motion.div>
+
+      <motion.div
+        key={`${service.id}-content`}
+        initial={reducedMotion ? false : { opacity: 0, x: 16 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5, delay: 0.05, ease }}
+        className="order-2"
+      >
+        <h3 className="font-display text-[clamp(1.6rem,3vw,2.4rem)] font-semibold leading-[1.08] tracking-[-0.03em] text-ink">
+          {service.title}
+        </h3>
+        <p className="mt-2 text-[14px] italic text-brand-blue sm:text-[15px]">
+          {service.tagline}
+        </p>
+        <p className="mt-5 max-w-[52ch] text-[15px] leading-[1.7] text-body sm:text-[16px]">
+          {service.description}
+        </p>
+
+        <ul className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2" role="list">
+          {service.keypoints.map((kp, i) => (
+            <motion.li
+              key={kp}
+              initial={reducedMotion ? false : { opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.15 + i * 0.05, ease }}
+              className="flex items-start gap-2.5 text-[14px] text-ink-soft"
+            >
+              <svg
+                aria-hidden
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="mt-0.5 flex-none text-brand-cyan"
+              >
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
+              <span>{kp}</span>
+            </motion.li>
+          ))}
+        </ul>
+
+        <div className="mt-8 flex flex-wrap gap-2">
+          {service.tags.map((t) => (
+            <span
+              key={t}
+              className="rounded-full border border-hairline bg-canvas-soft/60 px-3 py-1 text-[11px] font-medium tracking-tight text-ink-soft/80"
+            >
+              {t}
+            </span>
+          ))}
+        </div>
+      </motion.div>
     </div>
   );
 }
@@ -280,8 +317,7 @@ export function Services() {
   const [activeId, setActiveId] = useState<string>(SERVICES[0].id);
   const active = SERVICES.find((s) => s.id === activeId) ?? SERVICES[0];
 
-  // I link "Servizi" del footer attivano la tab corrispondente via evento
-  // (la sezione è una vista a tab, non ci sono ancore DOM per ogni servizio).
+  // I link "Servizi" del footer attivano la tab corrispondente via evento.
   useEffect(() => {
     function onSelect(e: Event) {
       const id = (e as CustomEvent<string>).detail;
@@ -296,101 +332,37 @@ export function Services() {
       id="servizi"
       aria-labelledby="servizi-heading"
       data-nav-theme="light"
-      className="relative overflow-hidden py-16 sm:py-24 lg:py-40"
-      style={{
-        background:
-          "linear-gradient(180deg, #ffffff 0%, #f6fafd 50%, #eef5fa 100%)",
-      }}
+      className="relative overflow-hidden bg-canvas py-20 sm:py-28 lg:py-32"
     >
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-32 right-[-12%] h-[560px] w-[560px] rounded-full opacity-60"
+        className="pointer-events-none absolute -top-32 right-[-12%] h-[460px] w-[460px] rounded-full opacity-50"
         style={{
           background:
-            "radial-gradient(circle at center, rgba(61,156,199,0.22) 0%, rgba(61,156,199,0) 62%)",
-          filter: "blur(28px)",
+            "radial-gradient(circle at center, rgba(61,156,199,0.16) 0%, rgba(61,156,199,0) 62%)",
+          filter: "blur(34px)",
         }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute bottom-[-18%] left-[-10%] h-[520px] w-[520px] rounded-full opacity-50"
-        style={{
-          background:
-            "radial-gradient(circle at center, rgba(21,117,164,0.18) 0%, rgba(21,117,164,0) 62%)",
-          filter: "blur(32px)",
-        }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-cyan/15 to-transparent"
       />
 
-      <div className="relative mx-auto max-w-[1200px] px-6">
-        <motion.div
-          initial={reducedMotion ? false : "hidden"}
-          whileInView={reducedMotion ? undefined : "visible"}
-          viewport={{ once: false, amount: 0.3, margin: "0px 0px -10% 0px" }}
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: 0.12, delayChildren: 0.05 } },
-          }}
-          className="mx-auto mb-10 flex max-w-3xl flex-col items-center text-center sm:mb-16 lg:mb-24"
-        >
-          <motion.div
-            variants={{
-              hidden: { opacity: 0, y: -14 },
-              visible: { opacity: 1, y: 0 },
-            }}
-            transition={{ duration: 0.6, ease }}
-            className="inline-flex items-center gap-3 font-mono text-[12px] uppercase tracking-[0.32em] text-brand-blue/85"
-          >
+      <div className="relative mx-auto max-w-[1180px] px-6">
+        <div className="mx-auto mb-12 max-w-2xl text-center sm:mb-14">
+          <span className="eyebrow inline-flex items-center justify-center gap-3">
             <span className="h-px w-10 bg-gradient-to-r from-transparent to-brand-blue/60" />
             Cosa facciamo
             <span className="h-px w-10 bg-gradient-to-l from-transparent to-brand-blue/60" />
-          </motion.div>
+          </span>
+          <h2 id="servizi-heading" className="heading-lg mt-5 text-ink">
+            Tutto quello che serve,{" "}
+            <span className="text-gradient-brand">sotto lo stesso tetto.</span>
+          </h2>
+          <p className="mx-auto mt-5 max-w-xl text-[16px] leading-[1.65] text-body">
+            Sei competenze, un solo team. Scegli un servizio per vedere come lo
+            affrontiamo.
+          </p>
+        </div>
 
-          <motion.h2
-            id="servizi-heading"
-            variants={{
-              hidden: { opacity: 0, y: 28, filter: "blur(8px)" },
-              visible: { opacity: 1, y: 0, filter: "blur(0px)" },
-            }}
-            transition={{ duration: 0.85, ease }}
-            className="mt-7 font-display text-[clamp(3rem,6.5vw,5.5rem)] font-semibold leading-[1] tracking-[-0.035em]"
-          >
-            <span className="bg-gradient-to-br from-brand-navy via-brand-blue to-brand-cyan bg-clip-text text-transparent">
-              Servizi
-            </span>
-          </motion.h2>
-
-          <motion.div
-            variants={{
-              hidden: { opacity: 0, scaleX: 0 },
-              visible: { opacity: 1, scaleX: 1 },
-            }}
-            transition={{ duration: 0.7, ease }}
-            aria-hidden
-            className="mt-7 h-px w-16 origin-center bg-gradient-to-r from-transparent via-brand-blue/70 to-transparent"
-          />
-
-          <motion.p
-            variants={{
-              hidden: { opacity: 0, y: 14 },
-              visible: { opacity: 1, y: 0 },
-            }}
-            transition={{ duration: 0.7, ease }}
-            className="mx-auto mt-6 max-w-xl font-display text-[clamp(1.05rem,1.4vw,1.25rem)] italic leading-[1.55] text-ink-soft/85"
-          >
-            &ldquo;Dall&rsquo;idea al lancio, sotto lo stesso tetto.&rdquo;
-          </motion.p>
-        </motion.div>
-
-        <DetailView
-          service={active}
-          services={SERVICES}
-          onSelect={setActiveId}
-          reducedMotion={reducedMotion}
-        />
+        <ServiceOverview services={SERVICES} activeId={activeId} onSelect={setActiveId} />
+        <ServicePanel service={active} reducedMotion={reducedMotion} />
       </div>
     </section>
   );

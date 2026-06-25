@@ -98,7 +98,7 @@ export default async function ArticlePage({
                   <span aria-hidden className="text-hairline">·</span>
                   <span className="text-body">{article.readingTime} di lettura</span>
                 </div>
-                <h1 className="mt-5 font-display text-[clamp(2rem,5vw,3.4rem)] font-semibold leading-[1.08] tracking-[-0.03em] text-ink">
+                <h1 className="heading-lg mt-5 text-ink">
                   {article.title}
                 </h1>
                 <p className="mt-5 text-[18px] leading-[1.6] text-body">{article.excerpt}</p>
@@ -114,7 +114,7 @@ export default async function ArticlePage({
 
               <Reveal className="mt-16 flex flex-col items-start gap-5 rounded-[1.75rem] bg-canvas-soft p-8 ring-1 ring-brand-blue/10 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <h2 className="font-display text-[clamp(1.3rem,2.6vw,1.8rem)] font-semibold tracking-[-0.02em] text-ink">
+                  <h2 className="heading-md text-ink">
                     Hai un progetto in mente?
                   </h2>
                   <p className="mt-2 text-[15px] leading-[1.6] text-body">

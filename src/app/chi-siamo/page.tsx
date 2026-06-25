@@ -37,20 +37,20 @@ const VALUES = [
   },
 ];
 
-// PLACEHOLDER — sostituire con i membri reali del team DGF prima della pubblicazione.
 const TEAM = [
-  { name: "Francesco D.", role: "Founder · Full-stack & Architettura" },
-  { name: "Giuseppe F.", role: "Co-founder · Frontend & UI/UX" },
-  { name: "Davide G.", role: "Co-founder · Backend & AI" },
+  { name: "Francesco Riccardo Giannetto", role: "Co-fondatore" },
+  { name: "David Moonsmee", role: "Co-fondatore" },
+  { name: "Giacomo Lanza", role: "Co-fondatore" },
 ];
 
+// Iniziali = prima lettera del nome + prima lettera del cognome (ultimo token),
+// così "Francesco Riccardo Giannetto" → "FG", non "FR".
 function Monogram({ name }: { name: string }) {
-  const initials = name
-    .split(" ")
-    .map((p) => p[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join("");
+  const parts = name.split(" ").filter(Boolean);
+  const initials =
+    parts.length > 1
+      ? `${parts[0][0]}${parts[parts.length - 1][0]}`
+      : (parts[0]?.slice(0, 2) ?? "");
   return (
     <div
       aria-hidden
@@ -77,7 +77,7 @@ export default function ChiSiamoPage() {
         <section className="bg-canvas py-16 sm:py-24" aria-label="La nostra storia">
           <div className="mx-auto grid max-w-[1180px] grid-cols-1 gap-12 px-6 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
             <Reveal>
-              <h2 className="font-display text-[clamp(1.8rem,4vw,2.8rem)] font-semibold leading-[1.1] tracking-[-0.03em] text-ink">
+              <h2 className="heading-lg text-ink">
                 Nati per fare le cose
                 <span className="text-brand-blue"> sul serio</span>
               </h2>
@@ -108,11 +108,11 @@ export default function ChiSiamoPage() {
         <section data-nav-theme="light" className="bg-canvas-soft py-16 sm:py-24" aria-label="Come lavoriamo">
           <div className="mx-auto max-w-[1180px] px-6">
             <Reveal>
-              <span className="inline-flex items-center gap-3 font-mono text-[12px] uppercase tracking-[0.32em] text-brand-blue">
+              <span className="eyebrow inline-flex items-center gap-3">
                 <span className="h-px w-10 bg-gradient-to-r from-transparent to-brand-blue/60" />
                 Come lavoriamo
               </span>
-              <h2 className="mt-5 max-w-[18ch] font-display text-[clamp(1.8rem,4vw,3rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-ink">
+              <h2 className="heading-lg mt-5 max-w-[18ch] text-ink">
                 Quattro principi, zero compromessi
               </h2>
             </Reveal>
@@ -139,11 +139,11 @@ export default function ChiSiamoPage() {
         <section className="bg-canvas py-16 sm:py-24" aria-label="Per chi lavoriamo">
           <div className="mx-auto max-w-[1180px] px-6">
             <Reveal>
-              <span className="inline-flex items-center gap-3 font-mono text-[12px] uppercase tracking-[0.32em] text-brand-blue">
+              <span className="eyebrow inline-flex items-center gap-3">
                 <span className="h-px w-10 bg-gradient-to-r from-transparent to-brand-blue/60" />
                 Per chi lavoriamo
               </span>
-              <h2 className="mt-5 max-w-[20ch] font-display text-[clamp(1.8rem,4vw,3rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-ink">
+              <h2 className="heading-lg mt-5 max-w-[20ch] text-ink">
                 Realtà diverse, lo stesso bisogno: fare sul serio
               </h2>
               <p className="mt-5 max-w-[60ch] text-[16.5px] leading-[1.7] text-body">
@@ -168,7 +168,7 @@ export default function ChiSiamoPage() {
                 },
               ].map((c, i) => (
                 <Reveal key={c.t} delay={i * 0.06}>
-                  <div className="flex h-full flex-col rounded-[1.5rem] bg-canvas-soft p-7 ring-1 ring-brand-blue/10">
+                  <div className="flex h-full flex-col rounded-[1.5rem] bg-canvas-soft p-7 ring-1 ring-brand-blue/10 transition-all duration-300 ease-out-soft hover:-translate-y-1 hover:bg-white hover:shadow-md hover:ring-brand-blue/25">
                     <h3 className="font-display text-[19px] font-semibold tracking-[-0.01em] text-ink">
                       {c.t}
                     </h3>
@@ -184,17 +184,19 @@ export default function ChiSiamoPage() {
         <section className="bg-canvas-soft py-16 sm:py-24" aria-label="Il team">
           <div className="mx-auto max-w-[1180px] px-6">
             <Reveal>
-              <h2 className="font-display text-[clamp(1.8rem,4vw,3rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-ink">
+              <h2 className="heading-lg text-ink">
                 Il team
               </h2>
-              <p className="mt-4 max-w-[52ch] text-[16px] leading-[1.6] text-body">
-                Poche persone, ognuna responsabile di ciò che costruisce. Sono loro a seguire il tuo progetto.
+              <p className="mt-4 max-w-[58ch] text-[16px] leading-[1.6] text-body">
+                Tre dottori laureati in Scienze Informatiche all&apos;Università di Messina.
+                Poche persone, ognuna responsabile di ciò che costruisce: sono loro a
+                seguire il tuo progetto, dall&apos;idea al lancio.
               </p>
             </Reveal>
             <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
               {TEAM.map((m, i) => (
                 <Reveal key={m.name} delay={i * 0.06}>
-                  <div className="flex h-full flex-col items-start rounded-[1.5rem] bg-canvas-soft p-7 ring-1 ring-brand-blue/10">
+                  <div className="group flex h-full flex-col items-start rounded-[1.5rem] bg-white p-7 ring-1 ring-brand-blue/10 transition-all duration-300 ease-out-soft hover:-translate-y-1 hover:shadow-md hover:ring-brand-blue/25">
                     <Monogram name={m.name} />
                     <h3 className="mt-5 font-display text-[18px] font-semibold tracking-[-0.01em] text-ink">
                       {m.name}
@@ -212,7 +214,7 @@ export default function ChiSiamoPage() {
           <div className="mx-auto max-w-[1180px] px-6">
             <Reveal className="flex flex-col items-start gap-5 rounded-[1.75rem] bg-gradient-to-br from-brand-navy to-brand-blue p-8 text-white sm:flex-row sm:items-center sm:justify-between sm:p-12">
               <div>
-                <h2 className="font-display text-[clamp(1.6rem,3.2vw,2.4rem)] font-semibold tracking-[-0.02em]">
+                <h2 className="heading-md">
                   Lavoriamo insieme?
                 </h2>
                 <p className="mt-2 max-w-[50ch] text-[15px] leading-[1.6] text-white/80">

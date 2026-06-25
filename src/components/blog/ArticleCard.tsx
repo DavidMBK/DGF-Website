@@ -7,7 +7,7 @@ export function ArticleCard({ article }: { article: Article }) {
   return (
     <Link
       href={`/blog/${article.slug}`}
-      className="group flex h-full flex-col rounded-[1.5rem] bg-white p-7 ring-1 ring-brand-blue/10 transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-1 hover:ring-brand-blue/25 sm:p-8"
+      className="group flex h-full flex-col rounded-[1.5rem] bg-white p-7 ring-1 ring-brand-blue/10 transition-all duration-500 ease-out-soft hover:-translate-y-1 hover:ring-brand-blue/25 sm:p-8"
     >
       <div className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.18em] text-brand-blue">
         <span>{article.category}</span>

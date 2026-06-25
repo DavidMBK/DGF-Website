@@ -314,58 +314,53 @@ function Device({ progress, reducedMotion, fitLaptop, fitPhone, compact }: Devic
                 </div>
               </div>
 
-              {/* Chat header */}
+              {/* Header onesto: marchio + contesto, niente persone/stati finti */}
               <div className="flex items-center gap-3 border-b border-white/10 pb-3">
-                <div className="relative">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-brand-cyan to-brand-blue text-[12px] font-bold text-white">
-                    D
-                  </div>
-                  <span className="absolute -bottom-px -right-px h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-[#0e3a5f]" />
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand-cyan to-brand-blue text-[12px] font-bold text-white">
+                  D
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-[13px] font-semibold text-white">
                     DGF Tech Solutions
                   </div>
-                  <div className="text-[10px] text-emerald-300/90">
-                    attivo ora
-                  </div>
+                  <div className="text-[10px] text-white/55">Consulenza · primo contatto</div>
                 </div>
               </div>
 
-              {/* Conversation */}
-              <div className="flex flex-1 flex-col gap-2 overflow-hidden py-3.5">
-                <div className="self-start max-w-[78%] rounded-2xl rounded-bl-md bg-white/10 px-3 py-2 text-[11.5px] leading-[1.45] text-white ring-1 ring-white/10">
-                  Ciao! Parlaci del tuo progetto.
+              {/* Brief: mini-UI della richiesta (nessuna conversazione inventata) */}
+              <div className="flex flex-1 flex-col py-4">
+                <div className="text-[12.5px] font-semibold text-white">Da dove partiamo?</div>
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {["Sito web", "E-commerce", "App & Software", "AI", "Non lo so ancora"].map(
+                    (c, i) => (
+                      <span
+                        key={c}
+                        className={[
+                          "rounded-full px-2.5 py-1 text-[10.5px] font-medium",
+                          i === 0
+                            ? "bg-white text-brand-navy"
+                            : "bg-white/10 text-white/80 ring-1 ring-white/10",
+                        ].join(" ")}
+                      >
+                        {c}
+                      </span>
+                    )
+                  )}
                 </div>
-                <div className="self-end max-w-[78%] rounded-2xl rounded-br-md bg-white px-3 py-2 text-[11.5px] leading-[1.45] text-brand-navy">
-                  Vorrei un sito nuovo con qualche integrazione AI.
+                <div className="mt-4 rounded-xl bg-white/[0.06] px-3 py-2.5 text-[11px] leading-[1.5] text-white/60 ring-1 ring-white/10">
+                  Raccontaci in due righe obiettivi e tempi: ti rispondiamo noi, di
+                  persona, entro 24 ore.
                 </div>
-                <div className="self-start max-w-[80%] rounded-2xl rounded-bl-md bg-white/10 px-3 py-2 text-[11.5px] leading-[1.45] text-white ring-1 ring-white/10">
-                  Perfetto, possiamo aiutarti. Ti torna comodo una call domani?
+                <div className="mt-auto pt-4">
+                  <button
+                    type="button"
+                    onClick={() => scrollToSection("contatti")}
+                    className="flex w-full items-center justify-center gap-2 rounded-full bg-white py-2.5 text-[12px] font-semibold text-brand-navy transition-transform duration-300 hover:scale-[1.02]"
+                  >
+                    Richiedi una call
+                    <ArrowUpRight size={13} strokeWidth={2.4} />
+                  </button>
                 </div>
-                <div className="self-end max-w-[60%] rounded-2xl rounded-br-md bg-white px-3 py-2 text-[11.5px] leading-[1.45] text-brand-navy">
-                  Sì, alle 15.
-                </div>
-                <div className="self-start flex items-center gap-1.5 rounded-2xl rounded-bl-md bg-white/10 px-3 py-2.5 ring-1 ring-white/10">
-                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white/70" />
-                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white/70 [animation-delay:150ms]" />
-                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white/70 [animation-delay:300ms]" />
-                </div>
-              </div>
-
-              {/* Input bar */}
-              <div className="flex items-center gap-2 rounded-full bg-white/10 px-3 py-2 ring-1 ring-white/15">
-                <span className="flex-1 truncate text-[11px] text-white/45">
-                  Scrivi un messaggio…
-                </span>
-                <button
-                  type="button"
-                  onClick={() => scrollToSection("contatti")}
-                  aria-label="Invia"
-                  className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-brand-navy transition-transform duration-300 hover:scale-105"
-                >
-                  <ArrowUpRight size={13} strokeWidth={2.4} />
-                </button>
               </div>
 
               {/* Home indicator */}
@@ -502,16 +497,29 @@ export function Consulenza() {
         className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-cyan/30 to-transparent"
       />
 
-      <h2 id="consulenza-heading" className="sr-only">
-        Consulenza — Parliamo del tuo progetto, davvero.
-      </h2>
+      {/* Intro visibile della sezione (heading reale, non più sr-only) */}
+      <div className="relative mx-auto max-w-[1180px] px-6 pt-24 text-center sm:pt-28">
+        <span className="eyebrow inline-flex items-center justify-center gap-3">
+          <span className="h-px w-10 bg-gradient-to-r from-transparent to-brand-blue/60" />
+          Consulenza
+          <span className="h-px w-10 bg-gradient-to-l from-transparent to-brand-blue/60" />
+        </span>
+        <h2 id="consulenza-heading" className="heading-lg mx-auto mt-5 max-w-[20ch] text-ink">
+          Prima del codice,{" "}
+          <span className="text-gradient-brand">la direzione giusta.</span>
+        </h2>
+        <p className="mx-auto mt-5 max-w-xl text-[16px] leading-[1.65] text-body">
+          Mettiamo a fuoco obiettivi, vincoli e priorità. Poi — e solo poi — si
+          scrive il codice.
+        </p>
+      </div>
 
       {/* Morph laptop → telefono guidato dallo scroll. Su desktop a dimensione
           piena; su mobile il dispositivo viene scalato per stare nello schermo. */}
       <div
         ref={stageRef}
         className={`relative mx-auto max-w-[1400px] px-4 sm:px-6 ${
-          staticMode ? "py-16 sm:py-20" : "min-h-[280vh] lg:min-h-[300vh]"
+          staticMode ? "py-16 sm:py-20" : "min-h-[220vh] lg:min-h-[240vh]"
         }`}
       >
         <div

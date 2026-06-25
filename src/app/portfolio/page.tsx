@@ -64,7 +64,7 @@ export default function PortfolioPage() {
 
             <Reveal className="mt-16 flex flex-col items-start gap-5 rounded-[1.75rem] bg-canvas-soft p-8 ring-1 ring-brand-blue/10 sm:flex-row sm:items-center sm:justify-between sm:p-10">
               <div>
-                <h2 className="font-display text-[clamp(1.5rem,3vw,2.1rem)] font-semibold tracking-[-0.02em] text-ink">
+                <h2 className="heading-md text-ink">
                   Il prossimo caso potrebbe essere il tuo
                 </h2>
                 <p className="mt-2 max-w-[52ch] text-[15px] leading-[1.6] text-body">

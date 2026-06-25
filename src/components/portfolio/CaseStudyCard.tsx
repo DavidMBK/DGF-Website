@@ -13,7 +13,7 @@ export function CaseStudyCard({ study, featured = false }: { study: CaseStudy; f
       href={`/portfolio/${study.slug}`}
       className={[
         "group block rounded-[1.75rem] bg-white/60 p-1.5 ring-1 ring-brand-blue/10",
-        "shadow-[0_30px_70px_-45px_rgba(10,40,80,0.4)] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
+        "shadow-[0_30px_70px_-45px_rgba(10,40,80,0.4)] transition-all duration-500 ease-out-soft",
         "hover:-translate-y-1 hover:ring-brand-blue/25",
         featured ? "sm:col-span-2" : "",
       ].join(" ")}
@@ -30,7 +30,7 @@ export function CaseStudyCard({ study, featured = false }: { study: CaseStudy; f
             alt={`Anteprima del progetto ${study.client}`}
             width={1000}
             height={625}
-            className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-[1.04]"
+            className="h-full w-full object-cover transition-transform duration-700 ease-out-soft group-hover:scale-[1.04]"
           />
         </div>
         <div className="flex flex-col p-6 sm:p-8">

@@ -44,3 +44,4 @@ next-env.d.ts
 /shots/
 *.log
 mp4s.txt
+/hero-source.mp4

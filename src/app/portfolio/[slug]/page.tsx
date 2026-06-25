@@ -97,7 +97,7 @@ export default async function CaseStudyPage({
                 <span aria-hidden className="text-hairline">·</span>
                 <span className="text-body">{study.siteLabel}</span>
               </div>
-              <h1 className="mt-5 max-w-[20ch] font-display text-[clamp(2.2rem,5.5vw,4rem)] font-semibold leading-[1.04] tracking-[-0.03em] text-ink">
+              <h1 className="display-xl mt-5 max-w-[20ch] text-ink">
                 {study.title}
               </h1>
               <p className="mt-6 max-w-[58ch] text-[17px] leading-[1.65] text-body">{study.summary}</p>
@@ -217,7 +217,7 @@ export default async function CaseStudyPage({
         {related.length > 0 && (
           <section data-nav-theme="light" className="bg-canvas-soft py-16 sm:py-24" aria-label="Progetti correlati">
             <div className="mx-auto max-w-[1180px] px-6">
-              <h2 className="font-display text-[clamp(1.6rem,3.5vw,2.4rem)] font-semibold tracking-[-0.02em] text-ink">
+              <h2 className="heading-md text-ink">
                 Altri progetti
               </h2>
               <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
