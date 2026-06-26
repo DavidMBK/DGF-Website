@@ -2,11 +2,12 @@ import { Code2, ShieldCheck, Gauge, Compass } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
-// Card-manifesto (grande): il cuore del "perché fidarsi".
+// Card-manifesto: il cuore del "perché fidarsi". Ora è il primo dei quattro
+// motivi interattivi, non più un riquadro a sé.
 const MANIFESTO = {
   Icon: Code2,
   title: "Parli con chi scrive il codice",
-  body: "Niente catena di intermediari, niente account manager di passaggio. Dal primo confronto al lancio segui sempre le stesse persone: quelle che progettano e sviluppano davvero il tuo prodotto. È la differenza tra un fornitore che esegue e un partner che capisce dove vuoi arrivare.",
+  body: "Niente catena di intermediari, niente account manager di passaggio. Dal primo confronto al lancio segui sempre le stesse persone: quelle che progettano e sviluppano davvero il tuo prodotto.",
 };
 
 // Tre pilastri minori, distinti dalle "Garanzie" (lì stanno gli impegni concreti;
@@ -28,6 +29,9 @@ const PILLARS = [
     body: "Software veloce, sicuro e manutenibile, fatto con strumenti moderni: regge nel tempo, non solo alla consegna.",
   },
 ];
+
+// I quattro motivi mostrati come rettangoli verticali interattivi.
+const CARDS = [MANIFESTO, ...PILLARS];
 
 export function WhyUs() {
   return (
@@ -53,11 +57,13 @@ export function WhyUs() {
           filter: "blur(34px)",
         }}
       />
-      <div className="relative mx-auto max-w-[1180px] px-6">
+      <div className="relative mx-auto max-w-[1480px] px-6">
         <Reveal>
           <SectionHeading
             eyebrow="Perché DGF"
             as="h2"
+            align="center"
+            size="lg"
             id="why-heading"
             title={
               <>
@@ -66,57 +72,47 @@ export function WhyUs() {
               </>
             }
             subtitle="Quello che ci distingue non è una lista di tecnologie, ma il modo in cui lavoriamo: vicino a te, in chiaro, e con un metro solo — che funzioni davvero."
-            className="max-w-[760px]"
+            className="max-w-[820px]"
           />
         </Reveal>
 
-        {/* Bento: 1 manifesto grande + 3 pilastri */}
-        <div className="mt-14 grid grid-cols-1 gap-5 lg:grid-cols-3">
-          {/* Card manifesto — occupa l'intera prima riga su desktop */}
-          <Reveal as="article" className="lg:col-span-3">
-            <article className="group relative overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-brand-navy to-brand-blue p-8 text-white shadow-brand ring-1 ring-white/10 sm:p-10 lg:p-12">
-              {/* griglia tech tenue di sfondo */}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 opacity-[0.08]"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(rgba(214,239,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(214,239,255,1) 1px, transparent 1px)",
-                  backgroundSize: "40px 40px",
-                  maskImage:
-                    "radial-gradient(120% 120% at 80% 20%, #000 20%, transparent 75%)",
-                  WebkitMaskImage:
-                    "radial-gradient(120% 120% at 80% 20%, #000 20%, transparent 75%)",
-                }}
-              />
-              <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:gap-10">
-                <span className="flex h-14 w-14 flex-none items-center justify-center rounded-2xl bg-white/12 text-white ring-1 ring-white/20 backdrop-blur-sm">
-                  <MANIFESTO.Icon size={26} strokeWidth={1.6} />
+        {/* Quattro motivi — rettangoli verticali interattivi.
+            Larghezza fissa (4 colonne uguali su desktop); su hover il riquadro
+            attivo cresce in ALTEZZA e gli altri si abbassano → feedback marcato.
+            A riposo sono tutti uguali (bianchi); l'attivo prende il gradiente
+            brand. La griglia riserva l'altezza massima per evitare salti di
+            layout; il gradiente entra in crossfade (opacity, GPU). L'effetto
+            altezza è solo su desktop (riga unica); su tablet/mobile resta il
+            solo cambio colore. */}
+        <div className="group/pillars mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4 lg:items-center lg:gap-6 lg:min-h-[660px]">
+          {CARDS.map((c, i) => (
+            <Reveal key={c.title} delay={i * 0.06} as="article" className="group/card">
+              <article className="relative flex h-full flex-col overflow-hidden rounded-[2rem] bg-white p-8 shadow-[0_1px_2px_rgba(15,42,73,0.05)] ring-1 ring-brand-blue/10 transition-[height,box-shadow] duration-[450ms] ease-out-soft lg:h-[520px] lg:p-10 lg:group-hover/pillars:h-[440px] lg:group-hover/card:!h-[660px] sm:group-hover/card:shadow-brand sm:group-hover/card:ring-white/10 motion-reduce:transition-none">
+                {/* livello gradiente brand: crossfade sul riquadro attivo */}
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand-navy to-brand-blue opacity-0 transition-opacity duration-[450ms] sm:group-hover/card:opacity-100"
+                />
+                {/* griglia tech tenue, solo sull'attivo */}
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-[450ms] sm:group-hover/card:opacity-[0.09]"
+                  style={{
+                    backgroundImage:
+                      "linear-gradient(rgba(214,239,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(214,239,255,1) 1px, transparent 1px)",
+                    backgroundSize: "34px 34px",
+                  }}
+                />
+                <span className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-brand-blue ring-1 ring-brand-blue/10 transition-colors duration-[450ms] sm:group-hover/card:bg-white/15 sm:group-hover/card:text-white sm:group-hover/card:ring-white/25">
+                  <c.Icon size={26} strokeWidth={1.65} />
                 </span>
-                <div>
-                  <h3 className="font-display text-[clamp(1.5rem,2.6vw,2.1rem)] font-semibold leading-[1.12] tracking-[-0.025em]">
-                    {MANIFESTO.title}
+                <div className="relative mt-auto pt-10">
+                  <h3 className="font-display text-[22px] font-semibold leading-[1.16] tracking-[-0.018em] text-ink transition-colors duration-[450ms] sm:group-hover/card:text-white">
+                    {c.title}
                   </h3>
-                  <p className="mt-3 max-w-[64ch] text-[15.5px] leading-[1.65] text-white/85">
-                    {MANIFESTO.body}
+                  <p className="mt-3.5 text-[16px] leading-[1.6] text-body transition-colors duration-[450ms] sm:group-hover/card:text-white/85">
+                    {c.body}
                   </p>
-                </div>
-              </div>
-            </article>
-          </Reveal>
-
-          {/* Tre pilastri */}
-          {PILLARS.map((p, i) => (
-            <Reveal key={p.title} delay={i * 0.07} as="article">
-              <article className="group h-full rounded-[1.75rem] bg-white/60 p-1.5 ring-1 ring-brand-blue/10 transition-all duration-500 ease-out-soft hover:-translate-y-1 hover:ring-brand-blue/25">
-                <div className="flex h-full flex-col rounded-[1.375rem] bg-white p-7 shadow-[inset_0_1px_1px_rgba(255,255,255,0.7)] sm:p-8">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-50 text-brand-blue ring-1 ring-brand-blue/10">
-                    <p.Icon size={20} strokeWidth={1.7} />
-                  </span>
-                  <h3 className="mt-5 font-display text-[19px] font-semibold tracking-[-0.015em] text-ink">
-                    {p.title}
-                  </h3>
-                  <p className="mt-2.5 text-[14.5px] leading-[1.6] text-body">{p.body}</p>
                 </div>
               </article>
             </Reveal>
